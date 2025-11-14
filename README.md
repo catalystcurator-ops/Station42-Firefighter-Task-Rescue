@@ -4,7 +4,7 @@
 **Save your tasks from burning down!** A gamified productivity tool that turns your to-do list into an interactive firefighting mission.
 
 ![Game Preview](https://img.shields.io/badge/status-active-success)
-![License](https://img.shields.io/badge/license-MIT-blue)
+![License](https://img.shields.io/badge/license-Apache%202.0-blue)
 
 ## 🎮 Play Now
 
