@@ -18,10 +18,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚒 Firefighter Task Rescue</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>🔥 Firefighter Task Rescue</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -31,1383 +29,1014 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Login Screen Styles */
+        .login-container {
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
+            background: linear-gradient(135deg, #2d3436 0%, #1e272e 100%);
             position: relative;
+            overflow: hidden;
         }
 
-        /* ==========================================
-           NEW LOGIN SCREEN STYLES ONLY
-           ========================================== */
-
-        /* Animated Background for Login Screen */
-        body::before {
+        .login-container::before {
             content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,107,107,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+        }
+
+        .login-box {
+            background: rgba(45, 52, 54, 0.95);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-width: 400px;
             width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(239, 68, 68, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(251, 146, 60, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        body.login-view::before {
-            opacity: 1;
-        }
-
-        body.login-view {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-30px) scale(1.05); }
-        }
-
-        /* Particles Effect */
-        .particle {
-            position: fixed;
-            width: 4px;
-            height: 4px;
-            background: rgba(251, 146, 60, 0.6);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: particle-float 15s linear infinite;
-            opacity: 0;
-        }
-
-        body.login-view .particle {
-            opacity: 1;
-        }
-
-        @keyframes particle-float {
-            0% {
-                transform: translateY(100vh) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Modern Auth Container - Glassmorphism */
-        #authContainer {
-            max-width: 500px;
-            margin: 80px auto;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(30px) saturate(180%);
-            padding: 60px 50px;
-            border-radius: 32px;
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-                0 0 100px rgba(251, 146, 60, 0.1);
             position: relative;
-            z-index: 10;
-            animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            font-family: 'Poppins', sans-serif;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .fire-truck-animation {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 80px;
+            animation: truck-bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes truck-bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-2deg); }
+            75% { transform: translateY(-5px) rotate(2deg); }
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #95a5a6;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #bdc3c7;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            background: rgba(255,255,255,0.08);
+            box-shadow: 0 0 20px rgba(255,107,107,0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            color: #7f8c8d;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #95a5a6;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: #ffa500;
+        }
+
+        .error-message {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Main App Styles */
+        .app-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .app-title {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-profile {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #95a5a6;
+            font-size: 14px;
+        }
+
+        .task-container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .task-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .task-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .add-task-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-task-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(46,204,113,0.4);
+        }
+
+        .tasks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .task-item {
+            background: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(50px) scale(0.95);
+                transform: translateX(-20px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateX(0);
             }
         }
 
-        /* Decorative Glow */
-        #authContainer::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(135deg, #ef4444, #f59e0b, #fb923c);
-            border-radius: 32px;
-            z-index: -1;
-            opacity: 0.5;
-            filter: blur(20px);
-            animation: glow 3s ease-in-out infinite;
+        .task-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
         }
 
-        @keyframes glow {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.8; }
-        }
-
-        /* Fire Truck Animation */
-        .auth-header {
-            text-align: center;
-            margin-bottom: 45px;
-            position: relative;
-        }
-
-        .fire-truck-container {
-            margin-bottom: 25px;
-            position: relative;
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .fire-truck-icon {
-            font-size: 90px;
-            display: inline-block;
-            animation: truck-drive 3s ease-in-out infinite;
-            filter: drop-shadow(0 15px 35px rgba(239, 68, 68, 0.4));
-            position: relative;
-            z-index: 2;
-        }
-
-        @keyframes truck-drive {
-            0%, 100% { 
-                transform: translateX(-15px) rotate(-3deg) scale(1); 
-            }
-            25% { 
-                transform: translateX(-8px) rotate(-1deg) scale(1.02); 
-            }
-            50% { 
-                transform: translateX(0px) rotate(0deg) scale(1.05); 
-            }
-            75% { 
-                transform: translateX(8px) rotate(1deg) scale(1.02); 
-            }
-        }
-
-        /* Smoke Effect */
-        .smoke {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            width: 40px;
-            height: 40px;
-            background: radial-gradient(circle, rgba(148, 163, 184, 0.3) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: smoke-float 2s ease-out infinite;
-        }
-
-        .smoke:nth-child(2) {
-            animation-delay: 0.5s;
-        }
-
-        .smoke:nth-child(3) {
-            animation-delay: 1s;
-        }
-
-        @keyframes smoke-float {
-            0% {
-                transform: translate(-50%, 0) scale(0.5);
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 0.3;
-            }
-            100% {
-                transform: translate(-50%, -50px) scale(1.5);
-                opacity: 0;
-            }
-        }
-
-        /* Shiny Premium Title with Dark Outline */
-        #authContainer h1 {
-            font-size: 48px;
-            font-weight: 900;
-            background: linear-gradient(135deg, 
-                #ef4444 0%, 
-                #fb923c 25%, 
-                #fbbf24 50%, 
-                #fb923c 75%, 
-                #ef4444 100%
-            );
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 12px;
-            letter-spacing: -2px;
-            animation: shine 4s linear infinite, float-title 3s ease-in-out infinite;
-            position: relative;
-            filter: drop-shadow(0 0 25px rgba(251, 146, 60, 0.5));
-            -webkit-text-stroke: 2px rgba(0, 0, 0, 0.8);
-            text-stroke: 2px rgba(0, 0, 0, 0.8);
-            paint-order: stroke fill;
-        }
-
-        @keyframes shine {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-
-        @keyframes float-title {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-        }
-
-        .auth-subtitle {
-            font-size: 15px;
-            color: #64748b;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-        }
-
-        .auth-tagline {
-            font-size: 13px;
-            color: #94a3b8;
-            font-weight: 400;
-            font-style: italic;
-        }
-
-        /* Premium Tab Design */
-        .auth-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 35px;
-            background: #f1f5f9;
-            padding: 8px;
-            border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) inset;
-        }
-
-        .auth-tab {
+        .task-info {
             flex: 1;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            font-size: 15px;
-            font-weight: 700;
-            color: #64748b;
-            border-radius: 14px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .auth-tab::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ef4444, #fb923c);
-            opacity: 0;
-            transition: opacity 0.4s;
-            z-index: -1;
-        }
-
-        .auth-tab.active {
-            color: white;
-            transform: scale(1.03);
-            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
-        }
-
-        .auth-tab.active::before {
-            opacity: 1;
-        }
-
-        .auth-tab:hover:not(.active) {
-            background: #e2e8f0;
-            transform: translateY(-3px);
-        }
-
-        /* Form Sections */
-        .auth-form {
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        /* Modern Input Groups */
-        .form-group {
-            margin-bottom: 26px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            color: #1e293b;
-            font-weight: 600;
-            font-size: 13px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 20px;
-            transition: all 0.3s;
-            z-index: 2;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 18px 20px 18px 52px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 15px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #f8fafc;
-            color: #1e293b;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #ef4444;
-            background: white;
-            box-shadow: 
-                0 0 0 4px rgba(239, 68, 68, 0.12),
-                0 8px 24px rgba(239, 68, 68, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .form-group input:focus ~ .input-icon {
-            color: #ef4444;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .form-group input::placeholder {
-            color: #cbd5e1;
-            font-weight: 400;
-        }
-
-        /* Password Strength Indicator */
-        .password-strength {
-            height: 5px;
-            background: #e2e8f0;
-            border-radius: 10px;
-            margin-top: 10px;
-            overflow: hidden;
-            display: none;
-        }
-
-        .password-strength.show {
-            display: block;
-        }
-
-        .password-strength-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 10px;
-        }
-
-        /* Premium Gradient Button */
-        .auth-button {
-            width: 100%;
-            padding: 20px;
-            background: linear-gradient(135deg, #ef4444 0%, #fb923c 100%);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 12px 35px rgba(239, 68, 68, 0.4),
-                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-            position: relative;
-            overflow: hidden;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .auth-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.6s;
-        }
-
-        .auth-button:hover::before {
-            left: 100%;
-        }
-
-        .auth-button:hover {
-            transform: translateY(-4px);
-            box-shadow: 
-                0 18px 45px rgba(239, 68, 68, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-        }
-
-        .auth-button:active {
-            transform: translateY(-2px);
-        }
-
-        /* Alert Messages */
-        .auth-error {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
-            color: #dc2626;
-            text-align: center;
-            margin-top: 24px;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 16px;
-            border-radius: 12px;
-            border: 2px solid rgba(220, 38, 38, 0.2);
-            animation: shake 0.6s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px); }
-            40%, 80% { transform: translateX(10px); }
-        }
-
-        .auth-success {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
-            color: #16a34a;
-            text-align: center;
-            margin-top: 24px;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 16px;
-            border-radius: 12px;
-            border: 2px solid rgba(22, 163, 74, 0.2);
-            animation: slideDown 0.6s;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ==========================================
-           ORIGINAL GAME DESIGN (UNCHANGED)
-           ========================================== */
-
-        /* Game Container */
-        #gameContainer {
-            display: none;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        #gameContainer.active {
-            display: block;
-        }
-
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            font-size: 48px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 10px;
-        }
-
-        .user-info {
-            background: rgba(255,255,255,0.2);
-            padding: 10px 20px;
-            border-radius: 10px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .tagline {
-            font-size: 18px;
-            opacity: 0.95;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .stat {
-            background: rgba(255,255,255,0.95);
-            padding: 15px 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .controls {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            margin: 0 10px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn-reset {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-
-        .btn-logout {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-
-        .houses-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            padding: 20px;
-        }
-
-        .house {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .house:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-
-        .house.burning {
-            animation: shake-house 0.5s infinite;
-        }
-
-        @keyframes shake-house {
-            0%, 100% { transform: translateX(0) translateY(-5px); }
-            25% { transform: translateX(-5px) translateY(-5px); }
-            75% { transform: translateX(5px) translateY(-5px); }
-        }
-
-        .category-badge {
-            display: inline-block;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 15px;
         }
 
         .task-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
-        .task-description {
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .urgency-bar {
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-
-        .urgency-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #FFC107, #F44336);
-            transition: width 1s linear;
-            border-radius: 10px;
-        }
-
-        .timer {
-            text-align: center;
-            font-size: 24px;
+        .task-priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-right: 10px;
         }
 
-        .timer.warning {
-            color: #FF9800;
-            animation: pulse 1s infinite;
+        .priority-high {
+            background: rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
         }
 
-        .timer.danger {
-            color: #F44336;
+        .priority-medium {
+            background: rgba(243, 156, 18, 0.3);
+            color: #f39c12;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        .priority-low {
+            background: rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
         }
 
-        .fire-effect {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 0;
-            background: linear-gradient(0deg, #FF4500, #FFA500, transparent);
-            transition: height 0.5s;
-            pointer-events: none;
-            opacity: 0.7;
-        }
-
-        .house.burning .fire-effect {
-            height: 60%;
-            animation: flicker 0.3s infinite;
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 0.9; }
-        }
-
-        .action-buttons {
+        .task-actions {
             display: flex;
             gap: 10px;
-            position: relative;
-            z-index: 1;
         }
 
-        .action-btn {
-            flex: 1;
-            padding: 12px;
+        .task-btn {
+            padding: 8px 16px;
             border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: bold;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
 
-        .btn-done {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
+        .complete-btn {
+            background: rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
         }
 
-        .btn-burn {
-            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
-            color: white;
+        .delete-btn {
+            background: rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
         }
 
-        .action-btn:hover {
+        .task-btn:hover {
             transform: scale(1.05);
         }
 
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            animation: fall 3s linear;
-            pointer-events: none;
-            z-index: 9999;
+        .leaderboard {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
         }
 
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
+        .leaderboard-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
-        .sync-status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.9);
-            padding: 10px 20px;
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .leaderboard-item {
+            background: rgba(255,255,255,0.08);
+            padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .leaderboard-rank {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #95a5a6;
+        }
+
+        .sync-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(46, 204, 113, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
             font-size: 14px;
-            color: #666;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: none;
+            animation: slideUp 0.3s ease;
         }
 
-        .sync-status.syncing {
-            display: block;
-            color: #667eea;
-        }
-
-        .sync-status.synced {
-            display: block;
-            color: #27ae60;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
-            #authContainer {
-                padding: 45px 30px;
-                margin: 40px auto;
+            .app-header {
+                flex-direction: column;
+                text-align: center;
             }
 
-            #authContainer h1 {
-                font-size: 36px;
+            .task-input-group {
+                flex-direction: column;
             }
 
-            .fire-truck-icon {
-                font-size: 70px;
-            }
-
-            h1 { font-size: 32px; }
-            .houses-container {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            .stats {
+            .task-item {
+                flex-direction: column;
                 gap: 15px;
             }
-            .btn {
-                padding: 10px 20px;
-                font-size: 14px;
-                margin: 5px;
+
+            .task-actions {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
 </head>
-<body class="login-view">
-    <!-- Floating Particles for Login -->
-    <script>
-        for (let i = 0; i < 15; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 15 + 's';
-            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
-            document.body.appendChild(particle);
-        }
-    </script>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-box">
+            <div class="fire-truck-animation">🚒</div>
+            <h1 class="login-title">Firefighter Task Rescue</h1>
+            <p class="login-subtitle">Your mission-critical task management system</p>
+            
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
 
-    <!-- Sync Status Indicator -->
-    <div id="syncStatus" class="sync-status">💾 Syncing...</div>
-
-    <!-- Authentication Container -->
-    <div id="authContainer">
-        <div class="auth-header">
-            <div class="fire-truck-container">
-                <div class="smoke"></div>
-                <div class="smoke"></div>
-                <div class="smoke"></div>
-                <div class="fire-truck-icon">🚒</div>
-            </div>
-            <h1>Task Rescue</h1>
-            <p class="auth-subtitle">Firefighter Mission Control</p>
-            <p class="auth-tagline">Save your tasks from burning down</p>
-        </div>
-        
-        <div class="auth-tabs">
-            <button class="auth-tab active" data-tab="login">Login</button>
-            <button class="auth-tab" data-tab="signup">Sign Up</button>
-        </div>
-
-        <!-- Login Form -->
-        <div id="loginForm" class="auth-form active">
-            <div class="form-group">
-                <label for="loginEmail">Email Address</label>
-                <div class="input-wrapper">
-                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
-                    <div class="input-icon">📧</div>
+            <div id="loginForm">
+                <div class="input-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="firefighter@station.com" required>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <div class="input-wrapper">
+                <div class="input-group">
+                    <label for="loginPassword">Password</label>
                     <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                    <div class="input-icon">🔒</div>
+                </div>
+                <button class="login-btn" onclick="handleLogin()">🔥 Login to Dashboard</button>
+                
+                <div class="divider">OR</div>
+                
+                <div class="signup-link">
+                    Don't have an account? <a href="#" onclick="toggleForm()">Sign Up</a>
                 </div>
             </div>
-            <button class="auth-button" onclick="handleLogin()">🚒 Start Mission</button>
-        </div>
 
-        <!-- Sign Up Form -->
-        <div id="signupForm" class="auth-form">
-            <div class="form-group">
-                <label for="signupEmail">Email Address</label>
-                <div class="input-wrapper">
-                    <input type="email" id="signupEmail" placeholder="your@email.com" required>
-                    <div class="input-icon">📧</div>
+            <div id="signupForm" style="display: none;">
+                <div class="input-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="John Firefighter" required>
+                </div>
+                <div class="input-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" placeholder="firefighter@station.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a strong password" required>
+                </div>
+                <button class="login-btn" onclick="handleSignup()">🚒 Create Account</button>
+                
+                <div class="divider">OR</div>
+                
+                <div class="signup-link">
+                    Already have an account? <a href="#" onclick="toggleForm()">Login</a>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="signupPassword">Password</label>
-                <div class="input-wrapper">
-                    <input type="password" id="signupPassword" placeholder="Minimum 6 characters" required oninput="checkPasswordStrength(this.value)">
-                    <div class="input-icon">🔒</div>
-                </div>
-                <div class="password-strength" id="passwordStrength">
-                    <div class="password-strength-fill" id="passwordStrengthFill"></div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="signupPasswordConfirm">Confirm Password</label>
-                <div class="input-wrapper">
-                    <input type="password" id="signupPasswordConfirm" placeholder="Re-enter password" required>
-                    <div class="input-icon">✅</div>
-                </div>
-            </div>
-            <button class="auth-button" onclick="handleSignup()">🔥 Join the Team</button>
         </div>
-
-        <div id="authMessage"></div>
     </div>
 
-    <!-- Game Container - YOUR ORIGINAL DESIGN -->
-    <div id="gameContainer">
-        <header>
-            <h1>🚒 Firefighter Task Rescue</h1>
-            <div class="user-info" id="userInfo">
-                <span id="userEmail"></span>
-            </div>
-            <p class="tagline">Save your tasks from burning down!</p>
-        </header>
-
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-value" id="completedCount">0</div>
-                <div class="stat-label">🚒 Tasks Saved</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="burnedCount">0</div>
-                <div class="stat-label">🔥 Houses Burned</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="activeCount">7</div>
-                <div class="stat-label">🏠 Active Tasks</div>
+    <!-- Main App -->
+    <div class="app-container" id="appContainer">
+        <div class="app-header">
+            <div class="app-title">🔥 Firefighter Task Rescue</div>
+            <div class="user-info">
+                <div class="user-profile">
+                    <span id="userName">Firefighter</span>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
             </div>
         </div>
 
-        <div class="controls">
-            <button class="btn btn-reset" onclick="mentalHealthReset()">🕊️ Let It Burn (Mental Health Reset)</button>
-            <button class="btn btn-logout" onclick="handleLogout()">🚪 Logout</button>
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Total Tasks</div>
+                <div class="stat-value" id="totalTasks">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completed</div>
+                <div class="stat-value" id="completedTasks">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending</div>
+                <div class="stat-value" id="pendingTasks">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completion Rate</div>
+                <div class="stat-value" id="completionRate">0%</div>
+            </div>
         </div>
 
-        <div class="houses-container" id="housesContainer"></div>
+        <div class="task-container">
+            <h2 style="margin-bottom: 20px;">📋 Mission Control</h2>
+            <div class="task-input-group">
+                <input type="text" id="taskTitle" class="task-input" placeholder="Enter emergency task..." />
+                <select id="taskPriority" class="task-input" style="flex: 0 0 150px;">
+                    <option value="high">🔴 High</option>
+                    <option value="medium" selected>🟡 Medium</option>
+                    <option value="low">🟢 Low</option>
+                </select>
+                <button class="add-task-btn" onclick="addTask()">+ Add Task</button>
+            </div>
+            <div class="tasks-list" id="tasksList">
+                <div class="loading">Loading your missions...</div>
+            </div>
+        </div>
+
+        <div class="leaderboard">
+            <h2 class="leaderboard-title">🏆 Top Firefighters</h2>
+            <div class="leaderboard-list" id="leaderboardList">
+                <div class="loading">Loading leaderboard...</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Supabase JS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div class="sync-indicator" id="syncIndicator">☁️ Synced to Cloud</div>
 
     <script>
-        // SUPABASE CONFIGURATION
-        const SUPABASE_URL = 'https://jytolrylfsgcibwtklrp.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5dG9scnlsZnNnY2lid3RrbHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNjU3MjEsImV4cCI6MjA3ODY0MTcyMX0.q22DexG-cm5erVJpfY0SeRLfWN3PWRLuLUhqUn3mXOk';
+        // Supabase Configuration
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
         let currentUser = null;
+        let tasks = [];
 
-        // Tab switching
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.dataset.tab;
-                
-                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                document.getElementById(tabName + 'Form').classList.add('active');
-                
-                showAuthMessage('', false);
-            });
-        });
-
-        // Handle Enter key
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const form = e.target.closest('.auth-form');
-                    if (form.id === 'loginForm') handleLogin();
-                    else if (form.id === 'signupForm') handleSignup();
-                }
-            });
-        });
-
-        // Password strength checker
-        function checkPasswordStrength(password) {
-            const strengthBar = document.getElementById('passwordStrength');
-            const strengthFill = document.getElementById('passwordStrengthFill');
-            
-            if (password.length === 0) {
-                strengthBar.classList.remove('show');
-                return;
+        // Check if user is already logged in
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                showApp();
+                loadUserData();
             }
-            
-            strengthBar.classList.add('show');
-            let strength = 0;
-            
-            if (password.length >= 6) strength += 33;
-            if (password.length >= 10) strength += 33;
-            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength += 17;
-            if (/[0-9]/.test(password)) strength += 17;
-            
-            strengthFill.style.width = strength + '%';
         }
 
+        // Toggle between login and signup forms
+        function toggleForm() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+        }
+
+        // Handle Login
         async function handleLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
+            const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
 
             if (!email || !password) {
-                showAuthMessage('Please fill in all fields', false);
+                showError('Please fill in all fields');
                 return;
             }
 
             try {
                 const { data, error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password
+                    email: email,
+                    password: password,
                 });
 
                 if (error) throw error;
 
                 currentUser = data.user;
-                showGame();
-                await loadUserTasks();
+                showSuccess('Login successful! Welcome back! 🔥');
+                
+                setTimeout(() => {
+                    showApp();
+                    loadUserData();
+                }, 1000);
+
             } catch (error) {
-                showAuthMessage(error.message, false);
+                showError(error.message);
             }
         }
 
+        // Handle Signup
         async function handleSignup() {
-            const email = document.getElementById('signupEmail').value.trim();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('signupPasswordConfirm').value;
 
-            if (!email || !password || !confirmPassword) {
-                showAuthMessage('Please fill in all fields', false);
+            if (!name || !email || !password) {
+                showError('Please fill in all fields');
                 return;
             }
 
             if (password.length < 6) {
-                showAuthMessage('Password must be at least 6 characters', false);
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showAuthMessage('Passwords do not match', false);
+                showError('Password must be at least 6 characters');
                 return;
             }
 
             try {
                 const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: name,
+                        }
+                    }
                 });
 
                 if (error) throw error;
 
-                showAuthMessage('✅ Account created! Please check your email to verify.', true);
+                showSuccess('Account created! Please check your email to verify your account. 🚒');
                 
-                setTimeout(() => {
-                    document.querySelector('[data-tab="login"]').click();
-                    document.getElementById('loginEmail').value = email;
-                }, 2000);
+                // Create user profile
+                await supabase.from('profiles').insert([
+                    { 
+                        id: data.user.id, 
+                        full_name: name,
+                        total_tasks: 0,
+                        completed_tasks: 0
+                    }
+                ]);
+
             } catch (error) {
-                showAuthMessage(error.message, false);
+                showError(error.message);
             }
         }
 
+        // Handle Logout
         async function handleLogout() {
-            if (confirm('Are you sure you want to logout? Your tasks are saved in the cloud.')) {
-                await saveTasksToCloud();
-                await supabase.auth.signOut();
+            const { error } = await supabase.auth.signOut();
+            if (!error) {
                 currentUser = null;
-                showAuth();
+                tasks = [];
+                hideApp();
             }
         }
 
-        function showAuthMessage(message, isSuccess) {
-            const messageEl = document.getElementById('authMessage');
-            messageEl.textContent = message;
-            messageEl.className = isSuccess ? 'auth-success' : 'auth-error';
-        }
-
-        function showAuth() {
-            document.body.classList.add('login-view');
-            document.getElementById('authContainer').style.display = 'block';
-            document.getElementById('gameContainer').classList.remove('active');
-        }
-
-        function showGame() {
-            document.body.classList.remove('login-view');
-            document.getElementById('authContainer').style.display = 'none';
-            document.getElementById('gameContainer').classList.add('active');
-            document.getElementById('userEmail').textContent = currentUser.email;
-        }
-
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                currentUser = session.user;
-                showGame();
-                loadUserTasks();
-            } else {
-                showAuth();
-            }
-        });
-
-        // CLOUD SYNC
-        function showSyncStatus(status) {
-            const syncEl = document.getElementById('syncStatus');
-            syncEl.className = 'sync-status ' + status;
+        // Show/Hide UI
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
             
-            if (status === 'syncing') {
-                syncEl.textContent = '💾 Syncing...';
-            } else if (status === 'synced') {
-                syncEl.textContent = '✅ Synced';
-                setTimeout(() => {
-                    syncEl.className = 'sync-status';
-                }, 2000);
-            }
+            // Update user name
+            const userName = currentUser?.user_metadata?.full_name || currentUser?.email || 'Firefighter';
+            document.getElementById('userName').textContent = userName;
         }
 
-        async function saveTasksToCloud() {
-            if (!currentUser) return;
-            
-            showSyncStatus('syncing');
-            
-            const tasksData = {
-                tasks: tasks,
-                stats: {
-                    completed: completedTasks,
-                    burned: burnedTasks
-                }
-            };
-
-            try {
-                const { data: existing } = await supabase
-                    .from('user_tasks')
-                    .select('id')
-                    .eq('user_id', currentUser.id)
-                    .single();
-
-                if (existing) {
-                    await supabase
-                        .from('user_tasks')
-                        .update({ tasks: tasksData })
-                        .eq('user_id', currentUser.id);
-                } else {
-                    await supabase
-                        .from('user_tasks')
-                        .insert([{ 
-                            user_id: currentUser.id, 
-                            tasks: tasksData 
-                        }]);
-                }
-                
-                showSyncStatus('synced');
-            } catch (error) {
-                console.error('Error saving tasks:', error);
-            }
+        function hideApp() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
         }
 
-        async function loadUserTasks() {
-            if (!currentUser) return;
-            
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            setTimeout(() => errorElement.style.display = 'none', 5000);
+        }
+
+        function showSuccess(message) {
+            const successElement = document.getElementById('successMessage');
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+            setTimeout(() => successElement.style.display = 'none', 3000);
+        }
+
+        function showSyncIndicator() {
+            const indicator = document.getElementById('syncIndicator');
+            indicator.style.display = 'block';
+            setTimeout(() => indicator.style.display = 'none', 2000);
+        }
+
+        // Load User Data
+        async function loadUserData() {
+            await loadTasks();
+            await loadLeaderboard();
+            updateStats();
+        }
+
+        // Load Tasks from Supabase
+        async function loadTasks() {
             try {
                 const { data, error } = await supabase
-                    .from('user_tasks')
-                    .select('tasks')
+                    .from('tasks')
+                    .select('*')
                     .eq('user_id', currentUser.id)
-                    .single();
+                    .order('created_at', { ascending: false });
 
-                if (data && data.tasks) {
-                    tasks = data.tasks.tasks || [];
-                    completedTasks = data.tasks.stats?.completed || 0;
-                    burnedTasks = data.tasks.stats?.burned || 0;
-                    
-                    updateStats();
-                    renderHouses();
-                } else {
-                    init();
-                }
+                if (error) throw error;
+
+                tasks = data || [];
+                renderTasks();
+                updateStats();
             } catch (error) {
-                init();
+                console.error('Error loading tasks:', error);
             }
         }
 
-        setInterval(() => {
-            if (currentUser) {
-                saveTasksToCloud();
+        // Add Task
+        async function addTask() {
+            const titleInput = document.getElementById('taskTitle');
+            const prioritySelect = document.getElementById('taskPriority');
+            
+            const title = titleInput.value.trim();
+            const priority = prioritySelect.value;
+
+            if (!title) {
+                showError('Please enter a task title');
+                return;
             }
-        }, 30000);
 
-        // GAME LOGIC - YOUR ORIGINAL CODE
-        const taskPool = [
-            { category: 'Work', emoji: '💼', title: 'Reply to emails', description: 'Clear out that inbox before it explodes!', color: '#3498db' },
-            { category: 'Work', emoji: '💼', title: 'Finish project report', description: 'Get those TPS reports done!', color: '#3498db' },
-            { category: 'Work', emoji: '💼', title: 'Schedule team meeting', description: 'Coordinate with the crew', color: '#3498db' },
-            { category: 'Work', emoji: '💼', title: 'Update LinkedIn profile', description: 'Professional presence matters', color: '#3498db' },
-            { category: 'Work', emoji: '💼', title: 'Review code PR', description: 'Help your teammate ship that feature', color: '#3498db' },
-            { category: 'Health', emoji: '🏃', title: 'Go for a 20-min walk', description: 'Your body will thank you!', color: '#27ae60' },
-            { category: 'Health', emoji: '🏃', title: 'Drink 8 glasses of water', description: 'Hydration = life', color: '#27ae60' },
-            { category: 'Health', emoji: '🏃', title: 'Do 10 pushups', description: 'Quick strength boost!', color: '#27ae60' },
-            { category: 'Health', emoji: '🏃', title: 'Schedule doctor appointment', description: 'That checkup is overdue', color: '#27ae60' },
-            { category: 'Health', emoji: '🏃', title: 'Meditate for 5 minutes', description: 'Mental health counts too', color: '#27ae60' },
-            { category: 'Finance', emoji: '💰', title: 'Pay credit card bill', description: 'Avoid those late fees!', color: '#f39c12' },
-            { category: 'Finance', emoji: '💰', title: 'Review budget', description: 'Where did your money go?', color: '#f39c12' },
-            { category: 'Finance', emoji: '💰', title: 'Set up auto-pay', description: 'Automate your finances', color: '#f39c12' },
-            { category: 'Finance', emoji: '💰', title: 'Transfer to savings', description: 'Future you will be grateful', color: '#f39c12' },
-            { category: 'Finance', emoji: '💰', title: 'Review subscriptions', description: 'Cancel what you don\'t use', color: '#f39c12' },
-            { category: 'Social', emoji: '👥', title: 'Text that friend', description: 'They miss you!', color: '#e74c3c' },
-            { category: 'Social', emoji: '👥', title: 'Plan weekend hangout', description: 'Social life needs attention', color: '#e74c3c' },
-            { category: 'Social', emoji: '👥', title: 'Reply to group chat', description: 'Don\'t be that person', color: '#e74c3c' },
-            { category: 'Social', emoji: '👥', title: 'Call your parents', description: 'They want to hear from you', color: '#e74c3c' },
-            { category: 'Social', emoji: '👥', title: 'Send birthday wishes', description: 'Someone\'s special day!', color: '#e74c3c' },
-            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Family dinner tonight', description: 'Quality time together', color: '#9b59b6' },
-            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Help kids with homework', description: 'Support their learning', color: '#9b59b6' },
-            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Plan family activity', description: 'Create memories!', color: '#9b59b6' },
-            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Video call grandparents', description: 'They love seeing you', color: '#9b59b6' },
-            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Update family calendar', description: 'Keep everyone coordinated', color: '#9b59b6' },
-            { category: 'Personal', emoji: '🌱', title: 'Read for 15 minutes', description: 'Feed your mind', color: '#1abc9c' },
-            { category: 'Personal', emoji: '🌱', title: 'Learn something new', description: 'Growth happens daily', color: '#1abc9c' },
-            { category: 'Personal', emoji: '🌱', title: 'Journal your thoughts', description: 'Reflect on your day', color: '#1abc9c' },
-            { category: 'Personal', emoji: '🌱', title: 'Practice a new skill', description: 'Get 1% better', color: '#1abc9c' },
-            { category: 'Personal', emoji: '🌱', title: 'Set weekly goals', description: 'Direction creates progress', color: '#1abc9c' },
-            { category: 'Home', emoji: '🏡', title: 'Do the dishes', description: 'Clean kitchen = clear mind', color: '#e67e22' },
-            { category: 'Home', emoji: '🏡', title: 'Take out trash', description: 'Before it starts smelling!', color: '#e67e22' },
-            { category: 'Home', emoji: '🏡', title: 'Vacuum living room', description: 'Dust bunnies must go', color: '#e67e22' },
-            { category: 'Home', emoji: '🏡', title: 'Water the plants', description: 'They need love too!', color: '#e67e22' },
-            { category: 'Home', emoji: '🏡', title: 'Organize one drawer', description: 'Small wins count', color: '#e67e22' }
-        ];
+            try {
+                const { data, error } = await supabase
+                    .from('tasks')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            title: title,
+                            priority: priority,
+                            completed: false,
+                        }
+                    ])
+                    .select();
 
-        let tasks = [];
-        let completedTasks = 0;
-        let burnedTasks = 0;
+                if (error) throw error;
 
-        function init() {
-            tasks = [];
-            for (let i = 0; i < 7; i++) {
-                const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
-                createHouse({ ...randomTask });
-            }
-            updateStats();
-            renderHouses();
-        }
-
-        function createHouse(taskData) {
-            const house = {
-                id: Date.now() + Math.random(),
-                ...taskData,
-                timeLeft: 60,
-                burning: false,
-                gracePeriod: false
-            };
-            tasks.push(house);
-            startTimer(house.id);
-            return house;
-        }
-
-        function startTimer(houseId) {
-            const interval = setInterval(() => {
-                const house = tasks.find(h => h.id === houseId);
-                if (!house) {
-                    clearInterval(interval);
-                    return;
-                }
-
-                house.timeLeft--;
-
-                if (house.timeLeft <= 0 && !house.gracePeriod) {
-                    house.burning = true;
-                    house.gracePeriod = true;
-                    house.timeLeft = 10;
-                }
-
-                if (house.timeLeft <= 0 && house.gracePeriod) {
-                    burnHouse(houseId);
-                    clearInterval(interval);
-                    return;
-                }
-
-                renderHouses();
-            }, 1000);
-        }
-
-        function completeTask(houseId) {
-            tasks = tasks.filter(h => h.id !== houseId);
-            completedTasks++;
-            updateStats();
-            renderHouses();
-            createConfetti();
-            
-            const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
-            createHouse({ ...randomTask });
-            renderHouses();
-            
-            saveTasksToCloud();
-        }
-
-        function burnHouse(houseId) {
-            tasks = tasks.filter(h => h.id !== houseId);
-            burnedTasks++;
-            updateStats();
-            renderHouses();
-            
-            const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
-            createHouse({ ...randomTask });
-            renderHouses();
-            
-            saveTasksToCloud();
-        }
-
-        function mentalHealthReset() {
-            if (confirm('🕊️ Let it all burn and start fresh? This is your mental health reset.')) {
-                tasks = [];
-                renderHouses();
+                tasks.unshift(data[0]);
+                renderTasks();
+                updateStats();
+                updateUserProfile();
                 
-                setTimeout(() => {
-                    for (let i = 0; i < 7; i++) {
-                        setTimeout(() => {
-                            const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
-                            createHouse({ ...randomTask });
-                            renderHouses();
-                        }, i * 300);
-                    }
-                    saveTasksToCloud();
-                }, 500);
+                titleInput.value = '';
+                showSyncIndicator();
+            } catch (error) {
+                showError('Failed to add task');
+                console.error(error);
             }
         }
 
+        // Complete Task
+        async function completeTask(taskId) {
+            try {
+                const task = tasks.find(t => t.id === taskId);
+                const newCompletedState = !task.completed;
+
+                const { error } = await supabase
+                    .from('tasks')
+                    .update({ completed: newCompletedState })
+                    .eq('id', taskId);
+
+                if (error) throw error;
+
+                task.completed = newCompletedState;
+                renderTasks();
+                updateStats();
+                updateUserProfile();
+                showSyncIndicator();
+            } catch (error) {
+                showError('Failed to update task');
+                console.error(error);
+            }
+        }
+
+        // Delete Task
+        async function deleteTask(taskId) {
+            if (!confirm('Are you sure you want to delete this task?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('tasks')
+                    .delete()
+                    .eq('id', taskId);
+
+                if (error) throw error;
+
+                tasks = tasks.filter(t => t.id !== taskId);
+                renderTasks();
+                updateStats();
+                updateUserProfile();
+                showSyncIndicator();
+            } catch (error) {
+                showError('Failed to delete task');
+                console.error(error);
+            }
+        }
+
+        // Update User Profile Stats
+        async function updateUserProfile() {
+            const totalTasks = tasks.length;
+            const completedTasks = tasks.filter(t => t.completed).length;
+
+            try {
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        total_tasks: totalTasks,
+                        completed_tasks: completedTasks
+                    })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+            } catch (error) {
+                console.error('Error updating profile:', error);
+            }
+        }
+
+        // Render Tasks
+        function renderTasks() {
+            const tasksList = document.getElementById('tasksList');
+            
+            if (tasks.length === 0) {
+                tasksList.innerHTML = '<div class="loading">No tasks yet. Add your first emergency task! 🚒</div>';
+                return;
+            }
+
+            tasksList.innerHTML = tasks.map(task => `
+                <div class="task-item ${task.completed ? 'completed' : ''}">
+                    <div class="task-info">
+                        <div class="task-title">${task.title}</div>
+                        <span class="task-priority priority-${task.priority}">
+                            ${task.priority === 'high' ? '🔴' : task.priority === 'medium' ? '🟡' : '🟢'} 
+                            ${task.priority.toUpperCase()}
+                        </span>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-btn complete-btn" onclick="completeTask('${task.id}')">
+                            ${task.completed ? '↩️ Undo' : '✅ Complete'}
+                        </button>
+                        <button class="task-btn delete-btn" onclick="deleteTask('${task.id}')">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update Stats
         function updateStats() {
-            document.getElementById('completedCount').textContent = completedTasks;
-            document.getElementById('burnedCount').textContent = burnedTasks;
-            document.getElementById('activeCount').textContent = tasks.length;
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            const pending = total - completed;
+            const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('pendingTasks').textContent = pending;
+            document.getElementById('completionRate').textContent = rate + '%';
         }
 
-        function renderHouses() {
-            const container = document.getElementById('housesContainer');
-            container.innerHTML = '';
+        // Load Leaderboard
+        async function loadLeaderboard() {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('full_name, completed_tasks')
+                    .order('completed_tasks', { ascending: false })
+                    .limit(10);
 
-            tasks.forEach(house => {
-                const houseEl = document.createElement('div');
-                houseEl.className = 'house' + (house.burning ? ' burning' : '');
-                
-                const urgencyPercent = house.gracePeriod ? 100 : ((60 - house.timeLeft) / 60) * 100;
-                const minutes = Math.floor(house.timeLeft / 60);
-                const seconds = house.timeLeft % 60;
-                const timeDisplay = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                
-                let timerClass = 'timer';
-                if (house.gracePeriod) {
-                    timerClass += ' danger';
-                } else if (house.timeLeft <= 20) {
-                    timerClass += ' warning';
-                }
+                if (error) throw error;
 
-                houseEl.innerHTML = `
-                    <span class="category-badge" style="background: ${house.color}; color: white;">
-                        ${house.emoji} ${house.category}
-                    </span>
-                    <div class="task-title">${house.title}</div>
-                    <div class="task-description">${house.description}</div>
-                    <div class="urgency-bar">
-                        <div class="urgency-fill" style="width: ${urgencyPercent}%"></div>
-                    </div>
-                    <div class="${timerClass}">
-                        ${house.gracePeriod ? '🔥 ' : '⏱️ '}${timeDisplay}
-                    </div>
-                    <div class="action-buttons">
-                        <button class="action-btn btn-done" onclick="completeTask(${house.id})">
-                            ✅ Done
-                        </button>
-                        <button class="action-btn btn-burn" onclick="burnHouse(${house.id})">
-                            🔥 Burn
-                        </button>
-                    </div>
-                    <div class="fire-effect"></div>
-                `;
-                
-                container.appendChild(houseEl);
-            });
-        }
-
-        function createConfetti() {
-            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F'];
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.top = '0px';
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => confetti.remove(), 3000);
-                }, i * 30);
+                renderLeaderboard(data || []);
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
             }
         }
+
+        // Render Leaderboard
+        function renderLeaderboard(profiles) {
+            const leaderboardList = document.getElementById('leaderboardList');
+            
+            if (profiles.length === 0) {
+                leaderboardList.innerHTML = '<div class="loading">No firefighters on the board yet!</div>';
+                return;
+            }
+
+            leaderboardList.innerHTML = profiles.map((profile, index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+                return `
+                    <div class="leaderboard-item">
+                        <div style="display: flex; align-items: center;">
+                            <span class="leaderboard-rank">#${index + 1} ${medal}</span>
+                            <span>${profile.full_name || 'Anonymous Firefighter'}</span>
+                        </div>
+                        <div style="font-weight: bold; color: #2ecc71;">
+                            ${profile.completed_tasks} tasks 🔥
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Enter key support
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('loginEmail')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
+            document.getElementById('loginPassword')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
+            document.getElementById('signupPassword')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSignup();
+            });
+            document.getElementById('taskTitle')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addTask();
+            });
+        });
+
+        // Initialize app
+        checkAuth();
     </script>
 </body>
 </html>
