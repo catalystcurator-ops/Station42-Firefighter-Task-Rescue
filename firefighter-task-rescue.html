@@ -15,3711 +15,1360 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
-<!-- rest of your code -->
-<!DOCTYPE html>
-<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔥 FireFighter: Task Rescue</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-  :root {
-    --bg: #0a0a0a;
-    --card: #1a1a1a;
-    --fire: #ff6600;
-    --smoke: #666;
-    --safe: #2ecc71;
-    --danger: #e74c3c;
-    --ember: #ff9933;
-    --text: #f2f2f2;
-    --warning: #f39c12;
-  }
-  * { box-sizing: border-box; }
-  body {
-    background: #0d0d0d;
-    color: var(--text);
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-  }
-  
-  /* Firestation Dashboard */
-  .firestation-header {
-    background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-    border-bottom: 3px solid #ff3300;
-    padding: 1.5rem 2rem;
-    box-shadow: 0 4px 20px rgba(255, 51, 0, 0.2);
-  }
-  .station-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1400px;
-    margin: 0 auto;
-    gap: 2rem;
-    flex-wrap: wrap;
-  }
-  .station-badge {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .badge-icon {
-    width: 60px;
-    height: 60px;
-    background: radial-gradient(circle, #ff3300, #cc0000);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    box-shadow: 0 0 20px rgba(255, 51, 0, 0.4);
-    animation: glow 2s infinite alternate;
-  }
-  @keyframes glow {
-    from { box-shadow: 0 0 20px rgba(255, 51, 0, 0.4); }
-    to { box-shadow: 0 0 30px rgba(255, 51, 0, 0.6); }
-  }
-  .station-title {
-    display: flex;
-    flex-direction: column;
-  }
-  .station-name {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: #f2f2f2;
-    margin: 0;
-    text-transform: uppercase;
-  }
-  .station-motto {
-    font-size: 0.75rem;
-    color: #888;
-    margin: 0;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  .station-stats {
-    display: flex;
-    gap: 1.5rem;
-  }
-  .stat-box {
-    background: rgba(255,255,255,0.03);
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.1);
-    text-align: center;
-    min-width: 80px;
-  }
-  .stat-label {
-    font-size: 0.7rem;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.25rem;
-  }
-  .stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0;
-  }
-  .stat-value.saved { color: #2ecc71; }
-  .stat-value.burned { color: #e74c3c; }
-  .stat-value.active { color: #f39c12; }
-  
-  /* Control Panel */
-  #controls {
-    background: transparent;
-    border: none;
-    padding: 1.5rem 2rem;
-    margin: 2rem auto;
-    max-width: 1400px;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  #controls .control-btn {
-    background: rgba(255,255,255,0.03);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--text);
-    padding: 1rem 2rem;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    text-transform: uppercase;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    min-height: 56px;
-  }
-  #controls .control-btn span {
-    display: inline-block;
-    transition: transform 0.3s;
-  }
-  #controls .control-btn:hover span:first-child {
-    transform: scale(1.2);
-  }
-  #controls .control-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transition: left 0.5s;
-  }
-  #controls .control-btn:hover::before {
-    left: 100%;
-  }
-  #controls .control-btn:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-  }
-  #controls .control-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  }
-  #controls .btn-new {
-    border-color: rgba(46,204,113,0.3);
-    min-width: 200px;
-  }
-  #controls .btn-new:hover {
-    background: rgba(46,204,113,0.15);
-    border-color: rgba(46,204,113,0.5);
-    box-shadow: 
-      0 6px 20px rgba(46,204,113,0.3),
-      inset 0 1px 20px rgba(46,204,113,0.1);
-  }
-  #controls .btn-new div {
-    text-transform: none;
-  }
-  #controls .btn-new div span:first-child {
-    font-weight: 500;
-  }
-  #controls .btn-new div span:last-child {
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-  #controls .btn-new:hover > span:first-child {
-    transform: scale(1.2) rotate(15deg);
-  }
-  #controls .btn-new::after {
-    content: '🏗️';
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    font-size: 0.9rem;
-    opacity: 0.2;
-    transition: opacity 0.3s, transform 0.3s;
-    animation: construction-pulse 2s ease-in-out infinite;
-  }
-  @keyframes construction-pulse {
-    0%, 100% { 
-      opacity: 0.2;
-      transform: scale(1);
-    }
-    50% { 
-      opacity: 0.35;
-      transform: scale(1.05);
-    }
-  }
-  #controls .btn-new:hover::after {
-    opacity: 0.5;
-    animation: construction-pulse 1s ease-in-out infinite;
-  }
-  #controls .btn-deploy-all {
-    border-color: rgba(52,152,219,0.3);
-    min-width: 200px;
-    position: relative;
-    overflow: hidden;
-  }
-  #controls .btn-deploy-all:hover {
-    background: rgba(52,152,219,0.15);
-    border-color: rgba(52,152,219,0.5);
-    box-shadow: 
-      0 6px 20px rgba(52,152,219,0.3),
-      inset 0 1px 20px rgba(52,152,219,0.1);
-  }
-  #controls .btn-deploy-all div {
-    text-transform: none;
-  }
-  #controls .btn-deploy-all div span:first-child {
-    font-weight: 500;
-  }
-  #controls .btn-deploy-all div span:last-child {
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-  #controls .btn-deploy-all:hover > span:first-child {
-    transform: scale(1.2);
-    animation: siren-flash 0.5s infinite;
-  }
-  @keyframes siren-flash {
-    0%, 100% { 
-      filter: drop-shadow(0 0 8px rgba(231,76,60,0.8));
-    }
-    50% { 
-      filter: drop-shadow(0 0 8px rgba(52,152,219,0.8));
-    }
-  }
-  #controls .btn-deploy-all::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-      45deg,
-      transparent,
-      rgba(231,76,60,0.3),
-      transparent,
-      rgba(52,152,219,0.3),
-      transparent
-    );
-    animation: siren-sweep 2s linear infinite;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  #controls .btn-deploy-all:hover::before {
-    opacity: 1;
-  }
-  @keyframes siren-sweep {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  #controls .btn-deploy-all::after {
-    content: '💨';
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    font-size: 0.9rem;
-    opacity: 0.2;
-    transition: opacity 0.3s;
-    animation: speed-lines 1s ease-in-out infinite;
-  }
-  @keyframes speed-lines {
-    0%, 100% { 
-      opacity: 0.2;
-      transform: translateX(0);
-    }
-    50% { 
-      opacity: 0.4;
-      transform: translateX(-3px);
-    }
-  }
-  #controls .btn-deploy-all:hover::after {
-    opacity: 0.5;
-    animation: speed-lines 0.3s ease-in-out infinite;
-  }
-  #controls .btn-summary {
-    border-color: rgba(52,152,219,0.3);
-    min-width: 200px;
-  }
-  #controls .btn-summary:hover {
-    background: rgba(52,152,219,0.15);
-    border-color: rgba(52,152,219,0.5);
-    box-shadow: 
-      0 6px 20px rgba(52,152,219,0.3),
-      inset 0 1px 20px rgba(52,152,219,0.1);
-  }
-  #controls .btn-summary div {
-    text-transform: none;
-  }
-  #controls .btn-summary div span:first-child {
-    font-weight: 500;
-  }
-  #controls .btn-summary div span:last-child {
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-  #controls .btn-summary:hover > span:first-child {
-    transform: scale(1.2);
-  }
-  #controls .btn-summary::after {
-    content: '📈';
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    font-size: 0.9rem;
-    opacity: 0.2;
-    transition: opacity 0.3s;
-  }
-  #controls .btn-summary:hover::after {
-    opacity: 0.5;
-  }
-  #controls .btn-reset {
-    border-color: rgba(243,156,18,0.3);
-    min-width: 200px;
-  }
-  #controls .btn-reset:hover {
-    background: rgba(243,156,18,0.15);
-    border-color: rgba(243,156,18,0.5);
-    box-shadow: 
-      0 6px 20px rgba(243,156,18,0.3),
-      inset 0 1px 20px rgba(243,156,18,0.1);
-  }
-  #controls .btn-reset div {
-    text-transform: none;
-  }
-  #controls .btn-reset div span:first-child {
-    font-weight: 500;
-  }
-  #controls .btn-reset div span:last-child {
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-  #controls .btn-reset:hover > span:first-child {
-    transform: scale(1.2) rotate(-360deg);
-    transition: transform 0.6s;
-  }
-  #controls .btn-reset::after {
-    content: '✨';
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    font-size: 0.9rem;
-    opacity: 0.2;
-    transition: opacity 0.3s;
-  }
-  #controls .btn-reset:hover::after {
-    opacity: 0.5;
-  }
-  #controls .btn-arson {
-    border-color: rgba(231,76,60,0.3);
-    animation: danger-pulse 2s infinite;
-    min-width: 200px;
-  }
-  #controls .btn-arson:hover {
-    background: rgba(231,76,60,0.15);
-    border-color: rgba(231,76,60,0.5);
-    box-shadow: 
-      0 6px 20px rgba(231,76,60,0.3),
-      inset 0 1px 20px rgba(231,76,60,0.1);
-    color: #ff6b6b;
-    animation: none;
-  }
-  #controls .btn-arson div {
-    text-transform: none;
-  }
-  #controls .btn-arson div span:first-child {
-    font-weight: 500;
-  }
-  #controls .btn-arson div span:last-child {
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-  #controls .btn-arson:hover > span:first-child {
-    filter: drop-shadow(0 0 8px rgba(255,107,107,0.8));
-    animation: flicker-icon 0.3s infinite;
-  }
-  #controls .btn-arson::after {
-    content: '🕊️';
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    font-size: 0.9rem;
-    opacity: 0.2;
-    transition: opacity 0.3s;
-  }
-  #controls .btn-arson:hover::after {
-    opacity: 0.5;
-    filter: drop-shadow(0 0 6px rgba(255,255,255,0.6));
-  }
-  @keyframes flicker-icon {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-  @keyframes danger-pulse {
-    0%, 100% {
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    50% {
-      box-shadow: 0 4px 20px rgba(231,76,60,0.4);
-    }
-  }
-  
-  /* Toast Notification for Deployments */
-  .toast {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    background: linear-gradient(135deg, rgba(52,152,219,0.95), rgba(41,128,185,0.95));
-    color: white;
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-    z-index: 10000;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    animation: slideInRight 0.4s ease-out, pulse-glow 2s ease-in-out infinite;
-    border: 2px solid rgba(255,255,255,0.3);
-    backdrop-filter: blur(10px);
-  }
-  @keyframes slideInRight {
-    from {
-      transform: translateX(400px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-  @keyframes pulse-glow {
-    0%, 100% {
-      box-shadow: 0 8px 25px rgba(52,152,219,0.4);
-    }
-    50% {
-      box-shadow: 0 8px 35px rgba(52,152,219,0.6);
-    }
-  }
-  .toast-icon {
-    font-size: 1.5rem;
-    animation: spin-siren 2s linear infinite;
-  }
-  @keyframes spin-siren {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  h1 {
-    text-align: center;
-    color: var(--fire);
-    text-shadow: 0 0 10px rgba(255,102,0,0.5);
-    display: none; /* Replaced by firestation header */
-  }
-  #game {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    margin: 2rem auto;
-    max-width: 1800px;
-    padding: 0 2rem;
-    min-height: 500px;
-  }
-  .house {
-    background: var(--card);
-    border-radius: 12px;
-    padding: 2rem 1.5rem;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s;
-    border: 2px solid transparent;
-    min-height: 480px;
-  }
-  
-  /* Dispatch Button Above House */
-  .dispatch-btn {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, rgba(52,152,219,0.1), rgba(41,128,185,0.1));
-    border: 1px solid rgba(52,152,219,0.3);
-    border-radius: 8px;
-    color: #5dade2;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
-  }
-  .dispatch-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(52,152,219,0.2), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.6s;
-  }
-  .dispatch-btn:hover::before {
-    transform: translateX(100%);
-  }
-  .dispatch-btn.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: all;
-    animation: dispatch-appear 0.5s ease-out, dispatch-pulse 3s ease-in-out infinite;
-    position: relative;
-  }
-  .dispatch-btn.active::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 10px;
-    height: 10px;
-    background: #ff3300;
-    border-radius: 50%;
-    border: 2px solid var(--card);
-    animation: urgent-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-  }
-  @keyframes urgent-ping {
-    0% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    75%, 100% {
-      transform: scale(2);
-      opacity: 0;
-    }
-  }
-  @keyframes dispatch-appear {
-    0% {
-      opacity: 0;
-      transform: translateY(-10px) scale(0.9);
-    }
-    60% {
-      transform: translateY(0) scale(1.05);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-  @keyframes dispatch-pulse {
-    0%, 100% {
-      box-shadow: 0 0 0 0 rgba(52,152,219,0.4);
-    }
-    50% {
-      box-shadow: 0 0 0 8px rgba(52,152,219,0);
-    }
-  }
-  .dispatch-btn:hover {
-    background: linear-gradient(135deg, rgba(52,152,219,0.2), rgba(41,128,185,0.2));
-    border-color: rgba(52,152,219,0.5);
-    box-shadow: 0 4px 15px rgba(52,152,219,0.3);
-    transform: translateY(-2px);
-  }
-  .dispatch-btn:hover::after {
-    content: 'Quick Deploy';
-    position: absolute;
-    bottom: -25px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.9);
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    white-space: nowrap;
-    opacity: 0;
-    animation: tooltip-fade 0.3s ease-out forwards;
-  }
-  @keyframes tooltip-fade {
-    to {
-      opacity: 1;
-      bottom: -30px;
-    }
-  }
-  .dispatch-btn:active {
-    transform: translateY(0);
-  }
-  .dispatch-icon {
-    font-size: 1.2rem;
-    animation: bounce-truck 2s ease-in-out infinite;
-  }
-  @keyframes bounce-truck {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
-  }
-  .dispatch-btn:hover .dispatch-icon {
-    animation: siren-flash 0.5s infinite, bounce-truck 2s ease-in-out infinite;
-  }
-  .dispatch-text {
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.75rem;
-  }
-  .dispatch-btn.dispatched {
-    background: linear-gradient(135deg, rgba(46,204,113,0.2), rgba(39,174,96,0.2));
-    border-color: rgba(46,204,113,0.5);
-    color: #58d68d;
-    cursor: not-allowed;
-    opacity: 0.8;
-    animation: success-flash 1s ease-out;
-  }
-  @keyframes success-flash {
-    0%, 100% {
-      background: linear-gradient(135deg, rgba(46,204,113,0.2), rgba(39,174,96,0.2));
-    }
-    50% {
-      background: linear-gradient(135deg, rgba(46,204,113,0.4), rgba(39,174,96,0.4));
-      box-shadow: 0 0 20px rgba(46,204,113,0.6);
-    }
-  }
-  .dispatch-btn.dispatched .dispatch-icon {
-    animation: none;
-  }
-  .dispatch-btn.dispatched:hover::after {
-    content: 'Unit En Route';
-  }
-  
-  /* Category Carousel */
-  .house-badge-carousel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    position: relative;
-  }
-  .house-badge-carousel::before {
-    content: '';
-    position: absolute;
-    inset: -10px;
-    background: radial-gradient(
-      ellipse at center,
-      rgba(100,200,255,0.05),
-      transparent 70%
-    );
-    opacity: 0;
-    transition: opacity 0.5s;
-    pointer-events: none;
-    border-radius: 20px;
-  }
-  .house-badge-carousel:hover::before {
-    opacity: 1;
-  }
-  .house-badge-carousel::after {
-    content: attr(data-category-info);
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.65rem;
-    color: #555;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  .house-badge-carousel:hover::after {
-    opacity: 1;
-  }
-  .carousel-arrow {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 50%;
-    color: rgba(255,255,255,0.7);
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    line-height: 1;
-    box-shadow: 
-      0 4px 15px rgba(0,0,0,0.3),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    position: relative;
-    overflow: hidden;
-  }
-  .carousel-arrow::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-      45deg,
-      transparent,
-      rgba(255,255,255,0.1),
-      transparent
-    );
-    transform: rotate(45deg);
-    animation: holographic-shine 3s linear infinite;
-  }
-  @keyframes holographic-shine {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-  }
-  .carousel-arrow::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  /* Holographic particles */
-  .carousel-arrow:hover::before {
-    animation: holographic-shine 1.5s linear infinite, sparkle 1.5s ease-in-out infinite;
-  }
-  @keyframes sparkle {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
-  }
-  .carousel-arrow:hover {
-    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-    color: white;
-    border-color: rgba(255,255,255,0.4);
-    transform: scale(1.15) translateY(-2px);
-    box-shadow: 
-      0 8px 25px rgba(0,0,0,0.4),
-      0 0 30px rgba(100,200,255,0.3),
-      0 0 15px rgba(255,100,200,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.3);
-    animation: holographic-shift 2s linear infinite;
-  }
-  @keyframes holographic-shift {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(360deg); }
-  }
-  .carousel-arrow:hover::after {
-    opacity: 1;
-  }
-  .carousel-arrow:active {
-    transform: scale(1.05) translateY(0);
-    box-shadow: 
-      0 4px 15px rgba(0,0,0,0.3),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-  }
-  .carousel-arrow:active::after {
-    animation: ripple 0.6s ease-out;
-  }
-  @keyframes ripple {
-    0% {
-      box-shadow: 0 0 0 0 rgba(255,255,255,0.5);
-      opacity: 1;
-    }
-    100% {
-      box-shadow: 0 0 0 20px rgba(255,255,255,0);
-      opacity: 0;
-    }
-  }
-  .carousel-arrow:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-  .carousel-left {
-    animation: float-left 3s ease-in-out infinite;
-  }
-  .carousel-right {
-    animation: float-right 3s ease-in-out infinite;
-  }
-  @keyframes float-left {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(-3px); }
-  }
-  @keyframes float-right {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(3px); }
-  }
-  .carousel-arrow:hover.carousel-left,
-  .carousel-arrow:hover.carousel-right {
-    animation: none;
-  }
-  .house-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    min-width: 120px;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-  .house-badge-icon {
-    width: 40px;
-    height: 40px;
-    background: radial-gradient(circle, #ff3300, #cc0000);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    box-shadow: 0 0 15px rgba(255, 51, 0, 0.3);
-    animation: glow-home 3s infinite alternate;
-    transition: background 0.4s ease, box-shadow 0.4s ease, animation 0.4s ease;
-  }
-  .house-badge-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #ff6b6b;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: color 0.4s ease;
-  }
-  
-  /* Category 0: Home/Household */
-  .house-badge[data-category="0"] .house-badge-icon {
-    background: radial-gradient(circle, #ff3300, #cc0000);
-    box-shadow: 0 0 15px rgba(255, 51, 0, 0.3);
-    animation: glow-home 3s infinite alternate;
-  }
-  .house-badge[data-category="0"] .house-badge-label {
-    color: #ff6b6b;
-  }
-  @keyframes glow-home {
-    from { box-shadow: 0 0 15px rgba(255, 51, 0, 0.3); }
-    to { box-shadow: 0 0 20px rgba(255, 51, 0, 0.5); }
-  }
-  
-  /* Category 1: Work/Career */
-  .house-badge[data-category="1"] .house-badge-icon {
-    background: radial-gradient(circle, #3498db, #2980b9);
-    box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
-    animation: glow-work 3s infinite alternate;
-  }
-  .house-badge[data-category="1"] .house-badge-label {
-    color: #5dade2;
-  }
-  @keyframes glow-work {
-    from { box-shadow: 0 0 15px rgba(52, 152, 219, 0.3); }
-    to { box-shadow: 0 0 20px rgba(52, 152, 219, 0.5); }
-  }
-  
-  /* Category 2: Health/Fitness */
-  .house-badge[data-category="2"] .house-badge-icon {
-    background: radial-gradient(circle, #2ecc71, #27ae60);
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
-    animation: glow-health 3s infinite alternate;
-  }
-  .house-badge[data-category="2"] .house-badge-label {
-    color: #58d68d;
-  }
-  @keyframes glow-health {
-    from { box-shadow: 0 0 15px rgba(46, 204, 113, 0.3); }
-    to { box-shadow: 0 0 20px rgba(46, 204, 113, 0.5); }
-  }
-  
-  /* Category 3: Education/Learning */
-  .house-badge[data-category="3"] .house-badge-icon {
-    background: radial-gradient(circle, #9b59b6, #8e44ad);
-    box-shadow: 0 0 15px rgba(155, 89, 182, 0.3);
-    animation: glow-education 3s infinite alternate;
-  }
-  .house-badge[data-category="3"] .house-badge-label {
-    color: #bb8fce;
-  }
-  @keyframes glow-education {
-    from { box-shadow: 0 0 15px rgba(155, 89, 182, 0.3); }
-    to { box-shadow: 0 0 20px rgba(155, 89, 182, 0.5); }
-  }
-  
-  /* Category 4: Finance/Money */
-  .house-badge[data-category="4"] .house-badge-icon {
-    background: radial-gradient(circle, #f39c12, #e67e22);
-    box-shadow: 0 0 15px rgba(243, 156, 18, 0.3);
-    animation: glow-finance 3s infinite alternate;
-  }
-  .house-badge[data-category="4"] .house-badge-label {
-    color: #f8c471;
-  }
-  @keyframes glow-finance {
-    from { box-shadow: 0 0 15px rgba(243, 156, 18, 0.3); }
-    to { box-shadow: 0 0 20px rgba(243, 156, 18, 0.5); }
-  }
-  
-  /* Category 5: Social/Relationships */
-  .house-badge[data-category="5"] .house-badge-icon {
-    background: radial-gradient(circle, #e91e63, #c2185b);
-    box-shadow: 0 0 15px rgba(233, 30, 99, 0.3);
-    animation: glow-social 3s infinite alternate;
-  }
-  .house-badge[data-category="5"] .house-badge-label {
-    color: #f06292;
-  }
-  @keyframes glow-social {
-    from { box-shadow: 0 0 15px rgba(233, 30, 99, 0.3); }
-    to { box-shadow: 0 0 20px rgba(233, 30, 99, 0.5); }
-  }
-  
-  /* Category 6: Creative/Hobbies */
-  .house-badge[data-category="6"] .house-badge-icon {
-    background: radial-gradient(circle, #00bcd4, #0097a7);
-    box-shadow: 0 0 15px rgba(0, 188, 212, 0.3);
-    animation: glow-creative 3s infinite alternate;
-  }
-  .house-badge[data-category="6"] .house-badge-label {
-    color: #4dd0e1;
-  }
-  @keyframes glow-creative {
-    from { box-shadow: 0 0 15px rgba(0, 188, 212, 0.3); }
-    to { box-shadow: 0 0 20px rgba(0, 188, 212, 0.5); }
-  }
-  
-  /* Warning/Critical states override */
-  .house.warning .house-badge-icon {
-    background: radial-gradient(circle, #f39c12, #e67e22) !important;
-    box-shadow: 0 0 20px rgba(243, 156, 18, 0.5) !important;
-    animation: glow-warning 2s infinite alternate !important;
-  }
-  @keyframes glow-warning {
-    from { box-shadow: 0 0 20px rgba(243, 156, 18, 0.5); }
-    to { box-shadow: 0 0 25px rgba(243, 156, 18, 0.7); }
-  }
-  .house.critical .house-badge-icon {
-    background: radial-gradient(circle, #e74c3c, #c0392b) !important;
-    box-shadow: 0 0 25px rgba(231, 76, 60, 0.6) !important;
-    animation: pulse-urgent 0.5s infinite alternate !important;
-  }
-  @keyframes pulse-urgent {
-    from { transform: scale(1); }
-    to { transform: scale(1.08); }
-  }
-  @keyframes glow-success {
-    from { box-shadow: 0 0 20px rgba(46, 204, 113, 0.5); }
-    to { box-shadow: 0 0 30px rgba(46, 204, 113, 0.8); }
-  }
-  .house:hover .house-badge-icon {
-    transform: scale(1.1);
-    box-shadow: 0 0 25px rgba(255, 51, 0, 0.6);
-  }
-  .house:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-  }
-  .house.warning {
-    border-color: var(--warning);
-    box-shadow: 0 0 20px rgba(243,156,18,0.3);
-  }
-  .house.critical {
-    border-color: var(--danger);
-    box-shadow: 0 0 30px rgba(231,76,60,0.5);
-    animation: shake 0.5s infinite;
-  }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
-  }
-  .house.warning .house-badge-icon {
-    background: radial-gradient(circle, #f39c12, #e67e22);
-    box-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
-  }
-  .house.critical .house-badge-icon {
-    background: radial-gradient(circle, #e74c3c, #c0392b);
-    box-shadow: 0 0 25px rgba(231, 76, 60, 0.6);
-    animation: pulse-urgent 0.5s infinite alternate;
-  }
-  @keyframes pulse-urgent {
-    from { transform: scale(1); }
-    to { transform: scale(1.08); }
-  }
-  .house-structure {
-    position: relative;
-    width: 160px;
-    margin: 0 auto;
-    transition: all 0.4s ease;
-  }
-  
-  /* Category-Specific House Themes */
-  /* Category 0: Home/Household - Traditional Red House */
-  .house[data-house-category="0"] .roof {
-    border-bottom-color: #c0392b !important;
-  }
-  .house[data-house-category="0"] .house-body {
-    background: linear-gradient(to bottom, #e67e22, #d35400) !important;
-  }
-  .house[data-house-category="0"] .door::before {
-    content: '🏠';
-  }
-  
-  /* Category 1: Work/Career - Office Building Blue */
-  .house[data-house-category="1"] .roof {
-    border-bottom-color: #2c3e50 !important;
-  }
-  .house[data-house-category="1"] .house-body {
-    background: linear-gradient(to bottom, #34495e, #2c3e50) !important;
-  }
-  .house[data-house-category="1"] .door::before {
-    content: '💼';
-  }
-  .house[data-house-category="1"] .window {
-    background: linear-gradient(135deg, rgba(52,152,219,0.4), rgba(41,128,185,0.6)) !important;
-  }
-  
-  /* Category 2: Health/Fitness - Green Medical */
-  .house[data-house-category="2"] .roof {
-    border-bottom-color: #27ae60 !important;
-  }
-  .house[data-house-category="2"] .house-body {
-    background: linear-gradient(to bottom, #2ecc71, #27ae60) !important;
-  }
-  .house[data-house-category="2"] .door::before {
-    content: '💪';
-  }
-  .house[data-house-category="2"] .window {
-    background: linear-gradient(135deg, rgba(46,204,113,0.4), rgba(39,174,96,0.6)) !important;
-  }
-  
-  /* Category 3: Education/Learning - Purple School */
-  .house[data-house-category="3"] .roof {
-    border-bottom-color: #8e44ad !important;
-  }
-  .house[data-house-category="3"] .house-body {
-    background: linear-gradient(to bottom, #9b59b6, #8e44ad) !important;
-  }
-  .house[data-house-category="3"] .door::before {
-    content: '📚';
-  }
-  .house[data-house-category="3"] .window {
-    background: linear-gradient(135deg, rgba(155,89,182,0.4), rgba(142,68,173,0.6)) !important;
-  }
-  
-  /* Category 4: Finance/Money - Gold Bank */
-  .house[data-house-category="4"] .roof {
-    border-bottom-color: #d68910 !important;
-  }
-  .house[data-house-category="4"] .house-body {
-    background: linear-gradient(to bottom, #f39c12, #e67e22) !important;
-  }
-  .house[data-house-category="4"] .door::before {
-    content: '💰';
-  }
-  .house[data-house-category="4"] .window {
-    background: linear-gradient(135deg, rgba(243,156,18,0.4), rgba(230,126,34,0.6)) !important;
-  }
-  
-  /* Category 5: Social/Relationships - Pink Community */
-  .house[data-house-category="5"] .roof {
-    border-bottom-color: #c2185b !important;
-  }
-  .house[data-house-category="5"] .house-body {
-    background: linear-gradient(to bottom, #e91e63, #c2185b) !important;
-  }
-  .house[data-house-category="5"] .door::before {
-    content: '👥';
-  }
-  .house[data-house-category="5"] .window {
-    background: linear-gradient(135deg, rgba(233,30,99,0.4), rgba(194,24,91,0.6)) !important;
-  }
-  
-  /* Category 6: Creative/Hobbies - Cyan Art Studio */
-  .house[data-house-category="6"] .roof {
-    border-bottom-color: #0097a7 !important;
-  }
-  .house[data-house-category="6"] .house-body {
-    background: linear-gradient(to bottom, #00bcd4, #0097a7) !important;
-  }
-  .house[data-house-category="6"] .door::before {
-    content: '🎨';
-  }
-  .house[data-house-category="6"] .window {
-    background: linear-gradient(135deg, rgba(0,188,212,0.4), rgba(0,151,167,0.6)) !important;
-  }
-  
-  .chimney {
-    position: absolute;
-    width: 20px;
-    height: 40px;
-    background: linear-gradient(to right, #8b4513, #6b3410);
-    top: -15px;
-    right: 30px;
-    border-radius: 2px 2px 0 0;
-    box-shadow: inset -2px 0 5px rgba(0,0,0,0.3);
-    z-index: 1;
-  }
-  .chimney-top {
-    position: absolute;
-    width: 24px;
-    height: 8px;
-    background: linear-gradient(to bottom, #a0522d, #8b4513);
-    top: -4px;
-    left: -2px;
-    border-radius: 2px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  }
-  .roof {
-    position: relative;
-    width: 0;
-    height: 0;
-    border-left: 80px solid transparent;
-    border-right: 80px solid transparent;
-    border-bottom: 60px solid var(--safe);
-    margin: 0 auto;
-    transition: border-bottom-color 0.5s ease, filter 0.4s ease;
-    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
-  }
-  .roof::before {
-    content: '';
-    position: absolute;
-    width: 160px;
-    height: 60px;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 8px,
-      rgba(0,0,0,0.1) 8px,
-      rgba(0,0,0,0.1) 9px
-    );
-    bottom: -60px;
-    left: -80px;
-    pointer-events: none;
-  }
-  .roof-ridge {
-    position: absolute;
-    width: 160px;
-    height: 4px;
-    background: rgba(0,0,0,0.2);
-    bottom: -2px;
-    left: -80px;
-  }
-  .house-body {
-    width: 140px;
-    height: 100px;
-    background: 
-      repeating-linear-gradient(
-        0deg,
-        #d4a574,
-        #d4a574 10px,
-        #c19563 10px,
-        #c19563 11px
-      ),
-      linear-gradient(to bottom, #d4a574, #c19563);
-    margin: 0 auto;
-    border-radius: 0 0 5px 5px;
-    box-shadow: 
-      inset 0 0 20px rgba(0,0,0,0.1),
-      0 2px 5px rgba(0,0,0,0.3);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px;
-    position: relative;
-    transition: background 0.4s ease, transform 0.4s ease;
-  }
-  /* Animate house when category changes */
-  .house.category-changing .house-structure {
-    animation: house-morph 0.4s ease-out;
-  }
-  @keyframes house-morph {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(0.97) translateY(2px);
-      filter: brightness(1.2);
-    }
-  }
-  /* Sparkle effect when changing categories */
-  .house.category-changing::after {
-    content: '✨';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3rem;
-    opacity: 0;
-    animation: sparkle-burst 0.6s ease-out;
-    pointer-events: none;
-    z-index: 10;
-  }
-  @keyframes sparkle-burst {
-    0% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0);
-    }
-    50% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1.2);
-    }
-    100% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(1.5);
-    }
-  }
-  .window {
-    width: 35px;
-    height: 40px;
-    background: linear-gradient(135deg, #87ceeb, #4a9fd8);
-    border: 3px solid #654321;
-    border-radius: 3px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 2px;
-    padding: 2px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.3);
-    position: relative;
-    transition: background 0.4s ease;
-  }
-  .window::before,
-  .window::after {
-    content: '';
-    position: absolute;
-    width: 8px;
-    height: 100%;
-    background: linear-gradient(to right, #654321, #4a2e1a);
-    top: 0;
-    box-shadow: inset 1px 0 2px rgba(0,0,0,0.5);
-  }
-  .window::before {
-    left: -13px;
-  }
-  .window::after {
-    right: -13px;
-  }
-  .window .window-shine {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 10px;
-    height: 10px;
-    background: rgba(255,255,255,0.4);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-  .window-pane {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(101,67,33,0.3);
-  }
-  .door {
-    width: 30px;
-    height: 50px;
-    background: 
-      repeating-linear-gradient(
-        0deg,
-        #8b4513,
-        #8b4513 15px,
-        #654321 15px,
-        #654321 16px
-      ),
-      linear-gradient(to right, #8b4513, #654321);
-    border: 3px solid #4a2e1a;
-    border-radius: 5px 5px 0 0;
-    position: relative;
-    box-shadow: 
-      inset 0 0 10px rgba(0,0,0,0.3), 
-      inset 2px 0 1px rgba(139,69,19,0.3),
-      0 2px 5px rgba(0,0,0,0.3);
-  }
-  .door::before {
-    position: absolute;
-    width: 24px;
-    height: 44px;
-    border: 2px solid rgba(74,46,26,0.5);
-    border-radius: 3px;
-    top: 2px;
-    left: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    transition: content 0.4s ease;
-    z-index: 1;
-  }
-  .door-knob {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: radial-gradient(circle, #ffd700, #daa520);
-    border-radius: 50%;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-  }
-  .door-window {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: linear-gradient(135deg, #87ceeb, #4a9fd8);
-    border: 2px solid #4a2e1a;
-    border-radius: 50%;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-  }
-  .foundation {
-    width: 145px;
-    height: 10px;
-    background: linear-gradient(to bottom, #555, #333);
-    margin: 0 auto;
-    border-radius: 0 0 3px 3px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-    position: relative;
-    z-index: 2;
-  }
-  .walkway {
-    width: 40px;
-    height: 18px;
-    background: 
-      repeating-linear-gradient(
-        0deg,
-        #888,
-        #888 5px,
-        #666 5px,
-        #666 6px
-      );
-    margin: 0 auto;
-    position: relative;
-    border-radius: 0 0 4px 4px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-    z-index: 1;
-  }
-  .lawn {
-    width: 160px;
-    height: 15px;
-    background: linear-gradient(to bottom, #2d5016, #1a3d0f);
-    margin: 0 auto;
-    border-radius: 0 0 8px 8px;
-    position: relative;
-    overflow: hidden;
-  }
-  .lawn::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.1) 2px,
-      rgba(0,0,0,0.1) 3px
-    );
-  }
-  .task-info {
-    text-align: center;
-    margin-top: 1rem;
-  }
-  .task-title {
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  .time-mode-selector {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-    margin: 1rem 0;
-  }
-  .mode-btn {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #888;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-weight: 600;
-  }
-  .mode-btn.active {
-    background: rgba(255,51,0,0.15);
-    border-color: rgba(255,51,0,0.4);
-    color: var(--fire);
-  }
-  .mode-btn:hover:not(.active) {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.2);
-    color: var(--text);
-  }
-  .time-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin: 1rem 0;
-    transition: opacity 0.3s;
-    flex-wrap: wrap;
-  }
-  .time-controls.duration-mode {
-    gap: 0.5rem;
-  }
-  .time-controls.deadline-mode {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  .time-btn {
-    width: 35px;
-    height: 35px;
-    background: var(--card);
-    border: 2px solid var(--fire);
-    border-radius: 50%;
-    color: var(--fire);
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    line-height: 1;
-  }
-  .time-btn:hover {
-    background: var(--fire);
-    color: white;
-    transform: scale(1.1);
-  }
-  .time-btn:active {
-    transform: scale(0.95);
-  }
-  .timer-value {
-    width: 70px;
-    padding: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: center;
-    background: var(--bg);
-    border: 2px solid var(--smoke);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: inherit;
-  }
-  .timer-value:focus {
-    outline: none;
-    border-color: var(--fire);
-  }
-  .time-unit {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .time-unit:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: var(--fire);
-  }
-  .time-unit:focus {
-    outline: none;
-    border-color: var(--fire);
-  }
-  .deadline-picker {
-    width: 100%;
-    max-width: 280px;
-    padding: 0.7rem;
-    font-size: 0.95rem;
-    background: var(--bg);
-    border: 2px solid var(--smoke);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: inherit;
-  }
-  .deadline-picker:focus {
-    outline: none;
-    border-color: var(--fire);
-  }
-  .timezone-selector {
-    width: 100%;
-    max-width: 280px;
-    padding: 0.7rem;
-    font-size: 0.9rem;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    color: var(--text);
-    cursor: pointer;
-    font-weight: 600;
-  }
-  .timezone-selector:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: var(--fire);
-  }
-  .timezone-selector:focus {
-    outline: none;
-    border-color: var(--fire);
-  }
-  .timer {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--safe);
-    margin: 0.5rem 0;
-    transition: color 0.3s;
-    font-family: 'Courier New', monospace;
-  }
-  .timer.warning { color: var(--warning); }
-  .timer.critical { color: var(--danger); }
-  .timer-breakdown {
-    font-size: 0.75rem;
-    color: #888;
-    min-height: 18px;
-    margin-bottom: 0.25rem;
-  }
-  .status {
-    font-size: 0.9rem;
-    color: var(--smoke);
-    margin: 0.5rem 0;
-    font-weight: bold;
-  }
-  .status.running { color: var(--safe); }
-  .status.paused { color: var(--warning); }
-  .controls {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  .btn-start {
-    background: var(--safe);
-  }
-  .btn-start:hover:not(:disabled) {
-    background: #27ae60;
-  }
-  .btn-start.paused {
-    background: var(--warning);
-  }
-  .btn-deploy {
-    background: var(--fire);
-  }
-  .smoke, .flames, .embers {
-    position: absolute;
-    pointer-events: none;
-    z-index: 10;
-  }
-  .smoke {
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--smoke);
-    opacity: 0;
-    animation: smoke 2s infinite;
-    transition: left 0.5s;
-  }
-  .embers {
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 40px;
-    opacity: 0;
-  }
-  .ember {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: var(--ember);
-    border-radius: 50%;
-    animation: ember 1s infinite;
-  }
-  .flames {
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 60px;
-    opacity: 0;
-  }
-  .flame {
-    position: absolute;
-    width: 20px;
-    height: 30px;
-    background: linear-gradient(to top, var(--fire), var(--ember));
-    border-radius: 50% 50% 0 0;
-    animation: flicker 0.3s infinite alternate;
-  }
-  @keyframes smoke {
-    0% { transform: translate(-50%, 0) scale(1); opacity: 0.6; }
-    100% { transform: translate(-50%, -60px) scale(2); opacity: 0; }
-  }
-  @keyframes ember {
-    0% { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-30px) scale(0.5); opacity: 0; }
-  }
-  @keyframes flicker {
-    0% { transform: scaleY(1) scaleX(1); }
-    100% { transform: scaleY(1.1) scaleX(0.95); }
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-  .button {
-    background: var(--fire);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.8rem 1.5rem;
-    margin-top: 1rem;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background 0.3s, transform 0.1s;
-    width: 100%;
-  }
-  .button:hover:not(:disabled) {
-    background: #ff7722;
-    transform: scale(1.05);
-  }
-  .button:active:not(:disabled) {
-    transform: scale(0.95);
-  }
-  .button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  .firetruck {
-    width: 70px;
-    height: 35px;
-    background: linear-gradient(to bottom, #cc0000, #990000);
-    position: absolute;
-    bottom: 15px;
-    left: -80px;
-    border-radius: 5px 15px 5px 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-    z-index: 100;
-  }
-  .firetruck::before {
-    content: '🚒';
-    position: absolute;
-    font-size: 2rem;
-    top: -10px;
-    left: 5px;
-  }
-  .water-spray {
-    position: absolute;
-    top: 10px;
-    right: -30px;
-    width: 0px;
-    height: 4px;
-    background: linear-gradient(to right, rgba(100,200,255,0.9), rgba(100,200,255,0.3));
-    opacity: 0;
-    transform-origin: left;
-    box-shadow: 
-      0 2px 4px rgba(100,200,255,0.5),
-      0 -2px 4px rgba(100,200,255,0.5);
-  }
-  .water-drops {
-    position: absolute;
-    top: -50px;
-    right: -30px;
-    width: 100px;
-    height: 100px;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .water-drop {
-    position: absolute;
-    width: 6px;
-    height: 8px;
-    background: radial-gradient(circle, rgba(100,200,255,0.8), rgba(100,200,255,0.3));
-    border-radius: 50% 50% 50% 0;
-    transform: rotate(-45deg);
-  }
-  @keyframes drive-and-spray {
-    0% { 
-      left: -80px; 
-    }
-    30% { 
-      left: calc(50% - 35px);
-    }
-    35%, 65% {
-      left: calc(50% - 35px);
-    }
-    100% { 
-      left: calc(50% - 35px);
-    }
-  }
-  @keyframes spray-water {
-    0%, 30% { 
-      opacity: 0; 
-      width: 0px;
-    }
-    35% {
-      opacity: 1;
-      width: 80px;
-    }
-    40%, 60% {
-      opacity: 1;
-      width: 80px;
-    }
-    65% {
-      opacity: 0;
-      width: 80px;
-    }
-    100% { 
-      opacity: 0;
-      width: 0px;
-    }
-  }
-  @keyframes water-drops-fall {
-    0%, 35% { 
-      opacity: 0;
-    }
-    40% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-    65% {
-      opacity: 0;
-      transform: translateY(100px) scale(0.5);
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-  @keyframes drive {
-    0% { left: -80px; }
-    40% { left: 50%; transform: translateX(-50%); }
-    60% { left: 50%; transform: translateX(-50%); }
-    100% { left: 120%; }
-  }
-  @keyframes spray {
-    0%, 40% { opacity: 0; }
-    45%, 55% { opacity: 1; transform: scaleX(1); }
-    60%, 100% { opacity: 0; }
-  }
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-content {
-    background: #1a1a1a;
-    padding: 2.5rem;
-    border-radius: 12px;
-    max-width: 500px;
-    width: 90%;
-    border: 2px solid rgba(255,51,0,0.3);
-    box-shadow: 0 10px 40px rgba(255,51,0,0.3);
-  }
-  .modal-content h2 {
-    color: var(--fire);
-    margin-top: 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 1.5rem;
-  }
-  .modal-content p {
-    color: #aaa;
-  }
-  .modal-content input,
-  .modal-content textarea {
-    width: 100%;
-    padding: 0.8rem;
-    margin: 1rem 0;
-    background: #0d0d0d;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: inherit;
-    font-size: 1rem;
-  }
-  .modal-content input:focus,
-  .modal-content textarea:focus {
-    outline: none;
-    border-color: var(--fire);
-  }
-  .modal-content textarea {
-    min-height: 100px;
-    resize: vertical;
-  }
-  .encouragement-passage {
-    animation: fadeInUp 0.6s ease-out backwards;
-  }
-  .encouragement-passage:nth-child(1) { animation-delay: 0.1s; }
-  .encouragement-passage:nth-child(2) { animation-delay: 0.2s; }
-  .encouragement-passage:nth-child(3) { animation-delay: 0.3s; }
-  .encouragement-passage:nth-child(4) { animation-delay: 0.4s; }
-  .encouragement-passage:nth-child(5) { animation-delay: 0.5s; }
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes breathe {
-    0%, 100% {
-      background: linear-gradient(135deg, rgba(46,204,113,0.1), rgba(52,152,219,0.1), rgba(155,89,182,0.1));
-    }
-    50% {
-      background: linear-gradient(135deg, rgba(46,204,113,0.15), rgba(52,152,219,0.15), rgba(155,89,182,0.15));
-    }
-  }
-  #encouragement-modal {
-    animation: breathe 8s ease-in-out infinite;
-  }
-  .modal-content {
-    animation: modalFadeIn 0.3s ease-out;
-  }
-  @keyframes modalFadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-  /* Custom scrollbar for encouragement modal */
-  .modal-content::-webkit-scrollbar {
-    width: 8px;
-  }
-  .modal-content::-webkit-scrollbar-track {
-    background: rgba(255,255,255,0.05);
-    border-radius: 4px;
-  }
-  .modal-content::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.2);
-    border-radius: 4px;
-  }
-  .modal-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255,255,255,0.3);
-  }
-  .modal-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-  .modal-buttons button {
-    flex: 1;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: var(--text);
-    padding: 1rem 1.5rem;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .modal-buttons button:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: var(--fire);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255,51,0,0.3);
-  }
-  .modal-buttons button:active {
-    transform: translateY(0);
-  }
-  #summary {
-    margin: 3rem auto;
-    max-width: 1200px;
-    padding: 0 2rem;
-    text-align: center;
-  }
-  #summary h2 {
-    color: var(--fire);
-    text-align: center;
-    font-size: 1.8rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .summary-table {
-    width: 100%;
-    margin: 2rem 0;
-    border-collapse: collapse;
-    background: rgba(255,255,255,0.02);
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.05);
-  }
-  .summary-table th,
-  .summary-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  }
-  .summary-table th {
-    background: rgba(255,51,0,0.2);
-    color: white;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-  }
-  .summary-table tr:hover {
-    background: rgba(255,255,255,0.03);
-  }
-  @media print {
-    body { background: white; color: black; }
-    .button, #controls { display: none; }
-    .firestation-header { display: none !important; }
-  }
-  @media (max-width: 768px) {
-    .station-info {
-      flex-direction: column;
-      text-align: center;
-    }
-    .station-stats {
-      width: 100%;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .stat-box {
-      min-width: 70px;
-      padding: 0.5rem 1rem;
-    }
-    #controls {
-      padding: 1rem;
-      gap: 0.75rem;
-    }
-    #controls .control-btn {
-      flex: 1 1 calc(50% - 0.5rem);
-      min-width: 140px;
-      padding: 0.9rem 1.5rem;
-      font-size: 0.8rem;
-      min-height: 52px;
-    }
-    #controls .btn-new,
-    #controls .btn-deploy-all,
-    #controls .btn-summary,
-    #controls .btn-reset,
-    #controls .btn-arson {
-      min-width: 160px;
-    }
-    #controls .btn-new div span:first-child,
-    #controls .btn-deploy-all div span:first-child,
-    #controls .btn-summary div span:first-child,
-    #controls .btn-reset div span:first-child,
-    #controls .btn-arson div span:first-child {
-      font-size: 0.65rem;
-    }
-    #controls .btn-new div span:last-child,
-    #controls .btn-deploy-all div span:last-child,
-    #controls .btn-summary div span:last-child,
-    #controls .btn-reset div span:last-child,
-    #controls .btn-arson div span:last-child {
-      font-size: 0.95rem;
-    }
-    #game {
-      padding: 0 1rem;
-      gap: 1.5rem;
-    }
-    .house {
-      min-height: 450px;
-    }
-    .dispatch-btn {
-      padding: 0.6rem 0.8rem !important;
-      font-size: 0.8rem !important;
-    }
-    .dispatch-icon {
-      font-size: 1rem !important;
-    }
-    .dispatch-text {
-      font-size: 0.7rem !important;
-    }
-    .house-badge-carousel {
-      margin-bottom: 0.75rem;
-      padding-bottom: 0.75rem;
-      gap: 0.5rem;
-    }
-    .carousel-arrow {
-      width: 32px;
-      height: 32px;
-      font-size: 1.3rem;
-    }
-    .house-badge {
-      min-width: 100px;
-    }
-    .house-badge-icon {
-      width: 35px;
-      height: 35px;
-      font-size: 1.1rem;
-    }
-    .house-badge-label {
-      font-size: 0.7rem;
-    }
-    .time-controls.duration-mode {
-      flex-wrap: wrap;
-    }
-    .timer-value {
-      width: 60px;
-    }
-    .time-unit {
-      font-size: 0.8rem;
-      padding: 0.5rem;
-    }
-    .deadline-picker,
-    .timezone-selector {
-      max-width: 100%;
-      font-size: 0.85rem;
-    }
-    .timer {
-      font-size: 1.6rem;
-    }
-    .timer-breakdown {
-      font-size: 0.7rem;
-    }
-    #analytics-dashboard {
-      padding: 1rem !important;
-      margin: 2rem 1rem !important;
-    }
-    #analytics-dashboard h2 {
-      font-size: 1.3rem !important;
-    }
-    #analytics-dashboard > div:first-of-type {
-      grid-template-columns: 1fr !important;
-      gap: 1.5rem !important;
-    }
-    #dashboard-stats > div {
-      padding: 1rem !important;
-    }
-    #dashboard-stats > div > div:first-child {
-      font-size: 0.75rem !important;
-    }
-    #dashboard-stats > div > div:last-child {
-      font-size: 2rem !important;
-    }
-    .toast {
-      right: 10px !important;
-      left: 10px !important;
-      max-width: calc(100vw - 20px) !important;
-      top: 80px !important;
-      padding: 0.75rem 1rem !important;
-    }
-    .toast-icon {
-      font-size: 1.2rem !important;
-    }
-    .toast div > div:first-child {
-      font-size: 0.8rem !important;
-    }
-    .toast div > div:last-child {
-      font-size: 0.7rem !important;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚒 Firefighter Task Rescue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(239, 68, 68, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(251, 146, 60, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        /* Particles Effect */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(251, 146, 60, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 15s linear infinite;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Modern Auth Container - Glassmorphism */
+        #authContainer {
+            max-width: 500px;
+            margin: 80px auto;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px) saturate(180%);
+            padding: 60px 50px;
+            border-radius: 32px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+                0 0 100px rgba(251, 146, 60, 0.1);
+            position: relative;
+            z-index: 10;
+            animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Decorative Glow */
+        #authContainer::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #ef4444, #f59e0b, #fb923c);
+            border-radius: 32px;
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(20px);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Fire Truck Animation */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 45px;
+            position: relative;
+        }
+
+        .fire-truck-container {
+            margin-bottom: 25px;
+            position: relative;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .fire-truck-icon {
+            font-size: 90px;
+            display: inline-block;
+            animation: truck-drive 3s ease-in-out infinite;
+            filter: drop-shadow(0 15px 35px rgba(239, 68, 68, 0.4));
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes truck-drive {
+            0%, 100% { 
+                transform: translateX(-15px) rotate(-3deg) scale(1); 
+            }
+            25% { 
+                transform: translateX(-8px) rotate(-1deg) scale(1.02); 
+            }
+            50% { 
+                transform: translateX(0px) rotate(0deg) scale(1.05); 
+            }
+            75% { 
+                transform: translateX(8px) rotate(1deg) scale(1.02); 
+            }
+        }
+
+        /* Smoke Effect */
+        .smoke {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(148, 163, 184, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: smoke-float 2s ease-out infinite;
+        }
+
+        .smoke:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .smoke:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        @keyframes smoke-float {
+            0% {
+                transform: translate(-50%, 0) scale(0.5);
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translate(-50%, -50px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Shiny Premium Title */
+        #authContainer h1 {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(135deg, 
+                #ef4444 0%, 
+                #fb923c 25%, 
+                #fbbf24 50%, 
+                #fb923c 75%, 
+                #ef4444 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -2px;
+            animation: shine 4s linear infinite, float-title 3s ease-in-out infinite;
+            position: relative;
+            filter: drop-shadow(0 0 25px rgba(251, 146, 60, 0.5));
+            -webkit-text-stroke: 2px rgba(0, 0, 0, 0.8);
+            text-stroke: 2px rgba(0, 0, 0, 0.8);
+            paint-order: stroke fill;
+        }
+
+        @keyframes shine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes float-title {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .auth-subtitle {
+            font-size: 15px;
+            color: #64748b;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .auth-tagline {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        /* Premium Tab Design */
+        .auth-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 35px;
+            background: #f1f5f9;
+            padding: 8px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) inset;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            color: #64748b;
+            border-radius: 14px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ef4444, #fb923c);
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: -1;
+        }
+
+        .auth-tab.active {
+            color: white;
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .auth-tab.active::before {
+            opacity: 1;
+        }
+
+        .auth-tab:hover:not(.active) {
+            background: #e2e8f0;
+            transform: translateY(-3px);
+        }
+
+        /* Form Sections */
+        .auth-form {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        /* Modern Input Groups */
+        .form-group {
+            margin-bottom: 26px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            transition: all 0.3s;
+            z-index: 2;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 18px 20px 18px 52px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ef4444;
+            background: white;
+            box-shadow: 
+                0 0 0 4px rgba(239, 68, 68, 0.12),
+                0 8px 24px rgba(239, 68, 68, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group input:focus ~ .input-icon {
+            color: #ef4444;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .form-group input::placeholder {
+            color: #cbd5e1;
+            font-weight: 400;
+        }
+
+        /* Password Strength Indicator */
+        .password-strength {
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .password-strength-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+        }
+
+        /* Premium Gradient Button */
+        .auth-button {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #ef4444 0%, #fb923c 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 12px 35px rgba(239, 68, 68, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .auth-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s;
+        }
+
+        .auth-button:hover::before {
+            left: 100%;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 18px 45px rgba(239, 68, 68, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+        }
+
+        .auth-button:active {
+            transform: translateY(-2px);
+        }
+
+        /* Alert Messages */
+        .auth-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+            color: #dc2626;
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            animation: shake 0.6s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .auth-success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+            color: #16a34a;
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid rgba(22, 163, 74, 0.2);
+            animation: slideDown 0.6s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Game Container Styles (keeping original game design) */
+        #gameContainer {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        #gameContainer.active {
+            display: block;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .game-title {
+            font-size: 48px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255,255,255,0.95);
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .houses-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .house {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .house:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .house.burning {
+            animation: shake-house 0.5s infinite;
+        }
+
+        @keyframes shake-house {
+            0%, 100% { transform: translateX(0) translateY(-5px); }
+            25% { transform: translateX(-5px) translateY(-5px); }
+            75% { transform: translateX(5px) translateY(-5px); }
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .task-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .task-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .urgency-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .urgency-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #FFC107, #F44336);
+            transition: width 1s linear;
+            border-radius: 10px;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .timer.warning {
+            color: #FF9800;
+            animation: pulse 1s infinite;
+        }
+
+        .timer.danger {
+            color: #F44336;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .fire-effect {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 0;
+            background: linear-gradient(0deg, #FF4500, #FFA500, transparent);
+            transition: height 0.5s;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .house.burning .fire-effect {
+            height: 60%;
+            animation: flicker 0.3s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.9; }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-done {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-burn {
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: fall 3s linear;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .sync-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 14px;
+            color: #666;
+            display: none;
+        }
+
+        .sync-status.syncing {
+            display: block;
+            color: #667eea;
+        }
+
+        .sync-status.synced {
+            display: block;
+            color: #27ae60;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            #authContainer {
+                padding: 45px 30px;
+                margin: 40px auto;
+            }
+
+            #authContainer h1 {
+                font-size: 36px;
+            }
+
+            .fire-truck-icon {
+                font-size: 70px;
+            }
+
+            .game-title { font-size: 32px; }
+            .houses-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .stats {
+                gap: 15px;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+                margin: 5px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="firestation-header">
-  <div class="station-info">
-    <div class="station-badge">
-      <div class="badge-icon">🚒</div>
-      <div class="station-title">
-        <div class="station-name">Station 42 Command</div>
-        <div class="station-motto">Task Response Unit</div>
-      </div>
-    </div>
-    <div class="station-stats">
-      <div class="stat-box">
-        <div class="stat-label">Rescued</div>
-        <div class="stat-value saved" id="saved-count">0</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Lost</div>
-        <div class="stat-value burned" id="burned-count">0</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Active</div>
-        <div class="stat-value active" id="active-count">0</div>
-      </div>
-    </div>
-  </div>
-</div>
+    <!-- Floating Particles -->
+    <script>
+        // Create floating particles
+        for (let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+            document.body.appendChild(particle);
+        }
+    </script>
 
-<div id="controls">
-  <button class="control-btn btn-new" onclick="addNewTask()">
-    <span style="font-size: 1.2rem;">➕</span>
-    <div style="display: flex; flex-direction: column; gap: 0.1rem; align-items: center;">
-      <span style="font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;">New Task</span>
-      <span style="font-size: 1.1rem; font-weight: 700;">Start Construction</span>
-    </div>
-  </button>
-  <button class="control-btn btn-deploy-all" onclick="deployAllFiretrucks()">
-    <span style="font-size: 1.2rem;">🚒</span>
-    <div style="display: flex; flex-direction: column; gap: 0.1rem; align-items: center;">
-      <span style="font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;">Emergency Response</span>
-      <span style="font-size: 1.1rem; font-weight: 700;">Deploy Firetrucks</span>
-    </div>
-  </button>
-  <button class="control-btn btn-summary" onclick="showSummary()">
-    <span style="font-size: 1.2rem;">📊</span>
-    <div style="display: flex; flex-direction: column; gap: 0.1rem; align-items: center;">
-      <span style="font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;">Mission Report</span>
-      <span style="font-size: 1.1rem; font-weight: 700;">View Analytics</span>
-    </div>
-  </button>
-  <button class="control-btn btn-reset" onclick="resetWeek()">
-    <span style="font-size: 1.2rem;">🔄</span>
-    <div style="display: flex; flex-direction: column; gap: 0.1rem; align-items: center;">
-      <span style="font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;">Reset All</span>
-      <span style="font-size: 1.1rem; font-weight: 700;">Start Fresh</span>
-    </div>
-  </button>
-  <button class="control-btn btn-arson" onclick="showMentalHealthModal()">
-    <span style="font-size: 1.2rem;">🔥</span>
-    <div style="display: flex; flex-direction: column; gap: 0.1rem; align-items: center;">
-      <span style="font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;">Need Release?</span>
-      <span style="font-size: 1.1rem; font-weight: 700;">Let It Burn</span>
-    </div>
-  </button>
-</div>
+    <!-- Sync Status Indicator -->
+    <div id="syncStatus" class="sync-status">💾 Syncing...</div>
 
-<div id="game"></div>
-
-<div id="summary" style="display: none;">
-  <h2>📊 Mission Report</h2>
-  <div id="summary-content"></div>
-  <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
-    <button class="control-btn btn-summary" onclick="printSummary()" style="margin: 0; min-height: 48px;">
-      <span style="font-size: 1.2rem;">🖨️</span>
-      <span style="margin-left: 0.5rem;">Print Report</span>
-    </button>
-    <button class="control-btn btn-reset" onclick="hideSummary()" style="margin: 0; min-height: 48px;">
-      <span style="font-size: 1.2rem;">←</span>
-      <span style="margin-left: 0.5rem;">Back to Station</span>
-    </button>
-  </div>
-</div>
-
-<!-- Modal for adding tasks -->
-<div id="task-modal" class="modal">
-  <div class="modal-content">
-    <h2>➕ Add New Task</h2>
-    <input type="text" id="task-title-input" placeholder="Task name (e.g., Finish Report)" />
-    <input type="number" id="task-time-input" placeholder="Time limit in seconds (e.g., 60)" min="10" max="300" />
-    <div class="modal-buttons">
-      <button class="button" onclick="submitNewTask()">Add Task</button>
-      <button class="button" onclick="closeModal('task-modal')" style="background: var(--smoke);">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal for saving tasks -->
-<div id="save-modal" class="modal">
-  <div class="modal-content">
-    <h2>🚒 Fire Truck Deployed!</h2>
-    <p>Task rescued successfully! What helped you complete this on time?</p>
-    <textarea id="save-note" placeholder="e.g., Started early, stayed focused, broke it into smaller steps, eliminated distractions..."></textarea>
-    <div class="modal-buttons">
-      <button class="button" onclick="confirmSave()">Submit Note</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal for burned tasks -->
-<div id="burn-modal" class="modal">
-  <div class="modal-content">
-    <h2>🔥 Task Burned!</h2>
-    <p>What caused you to miss this deadline?</p>
-    <textarea id="burn-note" placeholder="e.g., Poor time estimation, got distracted, procrastinated..."></textarea>
-    <div class="modal-buttons">
-      <button class="button" onclick="confirmBurn()">Submit Note</button>
-    </div>
-  </div>
-</div>
-
-<!-- Mental Health Support Modal -->
-<div id="mental-health-modal" class="modal" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);">
-  <div class="modal-content" style="max-width: 600px; border-color: rgba(231,76,60,0.2); box-shadow: 0 10px 40px rgba(231,76,60,0.2);">
-    <h2 style="color: #ff6b6b; margin-bottom: 1rem; text-align: center;">🔥 Let It Burn</h2>
-    <p style="color: #aaa; font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; text-align: center;">
-      Sometimes we need to release what we're holding. This will clear all active tasks.
-    </p>
-    <p style="color: #ccc; font-size: 0.95rem; margin-bottom: 2rem; text-align: center; font-style: italic;">
-      Are you feeling overwhelmed? Take a moment for yourself.
-    </p>
-    <div class="modal-buttons" style="flex-direction: column; gap: 0.75rem;">
-      <button class="button" onclick="showEncouragement()" style="background: linear-gradient(135deg, var(--fire), #c0392b); flex: 1; padding: 1.2rem; font-size: 1rem; box-shadow: 0 4px 15px rgba(231,76,60,0.3); font-weight: 600;">
-        <span style="display: block; margin-bottom: 0.3rem;">🕊️ Yes, let it burn</span>
-        <span style="font-size: 0.85rem; opacity: 0.85; font-weight: 400;">I need release</span>
-      </button>
-      <button class="button" onclick="closeModal('mental-health-modal')" style="background: rgba(255,255,255,0.1); flex: 1; padding: 1rem; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2);">
-        💚 I'm okay, take me back
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Encouragement Modal -->
-<div id="encouragement-modal" class="modal" style="background: linear-gradient(135deg, rgba(46,204,113,0.1), rgba(52,152,219,0.1), rgba(155,89,182,0.1)); backdrop-filter: blur(20px);">
-  <div class="modal-content" style="max-width: 700px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
-    <h2 style="color: var(--safe); margin-bottom: 1.5rem; text-align: center; font-size: 1.8rem;">✨ A Moment of Peace</h2>
-    
-    <div class="encouragement-passage" style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(46,204,113,0.05); border-left: 4px solid var(--safe); border-radius: 8px;">
-      <h3 style="color: var(--safe); margin-top: 0; font-size: 1rem;">You Are Enough</h3>
-      <p style="line-height: 1.8; color: #ccc;">
-        In this moment, recognize that you are whole exactly as you are. The tasks that weigh on you do not define your worth. 
-        Your value exists independent of productivity, separate from achievement. You are inherently deserving of rest, peace, 
-        and gentle compassion. Breathe deeply and know that it's okay to release what no longer serves you.
-      </p>
-    </div>
-
-    <div class="encouragement-passage" style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(52,152,219,0.05); border-left: 4px solid #3498db; border-radius: 8px;">
-      <h3 style="color: #5dade2; margin-top: 0; font-size: 1rem;">This Too Shall Pass</h3>
-      <p style="line-height: 1.8; color: #ccc;">
-        Like waves upon the shore, all things in life move in cycles. This moment of overwhelm is temporary, a passing cloud 
-        in the vast sky of your existence. You have weathered storms before and emerged stronger. Trust in your resilience. 
-        Tomorrow will bring new light, new possibilities, and renewed energy. Allow yourself to rest without guilt.
-      </p>
-    </div>
-
-    <div class="encouragement-passage" style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(155,89,182,0.05); border-left: 4px solid #9b59b6; border-radius: 8px;">
-      <h3 style="color: #bb8fce; margin-top: 0; font-size: 1rem;">Release and Renewal</h3>
-      <p style="line-height: 1.8; color: #ccc;">
-        Just as the forest floor must clear away fallen leaves to nurture new growth, so too must you release what has accumulated. 
-        Letting go is not failure—it is wisdom. It is the understanding that you cannot carry everything, and that's perfectly human. 
-        In releasing these burdens, you create space for what truly matters. You make room for joy, creativity, and authentic connection.
-      </p>
-    </div>
-
-    <div class="encouragement-passage" style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(243,156,18,0.05); border-left: 4px solid #f39c12; border-radius: 8px;">
-      <h3 style="color: #f8c471; margin-top: 0; font-size: 1rem;">Your Inner Light</h3>
-      <p style="line-height: 1.8; color: #ccc;">
-        Within you burns an eternal flame—a source of strength, wisdom, and love that no circumstance can extinguish. 
-        When the world feels heavy, turn inward to this light. It has guided you through darkness before and will do so again. 
-        You possess everything you need to begin again. Trust yourself. Honor your journey. Celebrate your courage in simply continuing.
-      </p>
-    </div>
-
-    <div class="encouragement-passage" style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(233,30,99,0.05); border-left: 4px solid #e91e63; border-radius: 8px;">
-      <h3 style="color: #f06292; margin-top: 0; font-size: 1rem;">Begin Again With Grace</h3>
-      <p style="line-height: 1.8; color: #ccc;">
-        Every sunset gifts us the promise of dawn. Every ending holds within it a new beginning. You stand now at a threshold, 
-        having chosen to release what was. This is an act of profound self-love. As you start fresh, do so with kindness toward yourself. 
-        Set intentions that honor your well-being. Build slowly, deliberately, joyfully. Remember: you are not behind. You are exactly where you need to be.
-      </p>
-    </div>
-
-    <div style="text-align: center; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-      <button class="button" onclick="confirmArsonWithSupport()" style="background: linear-gradient(135deg, var(--safe), #27ae60); padding: 1rem 2rem; font-size: 1rem; box-shadow: 0 4px 15px rgba(46,204,113,0.3);">
-        🌱 Clear All Tasks & Start Fresh
-      </button>
-      <button class="button" onclick="closeModal('encouragement-modal')" style="background: var(--smoke); padding: 1rem 2rem; font-size: 1rem; margin-left: 1rem;">
-        💚 Return to Tasks
-      </button>
-    </div>
-  </div>
-</div>
-
-<script>
-// Task pool for variety
-const taskPool = [
-  { title: "Finish Report", time: 60 },
-  { title: "Email Client", time: 45 },
-  { title: "Workout", time: 90 },
-  { title: "Meditate", time: 50 },
-  { title: "Pay Bills", time: 40 },
-  { title: "Call Mom", time: 35 },
-  { title: "Read Chapter", time: 70 },
-  { title: "Team Meeting", time: 55 },
-  { title: "Code Review", time: 65 },
-  { title: "Grocery Shopping", time: 80 }
-];
-
-let log = [];
-let savedCount = 0;
-let burnedCount = 0;
-let activeCount = 0;
-let currentTaskElement = null;
-let currentTask = null;
-
-// Initialize with 3 random tasks
-function init() {
-  console.log('🚒 Initializing FireFighter Task Rescue - Creating 7 houses...');
-  for (let i = 0; i < 7; i++) {
-    const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
-    console.log(`Creating house ${i + 1}/7: ${randomTask.title}`);
-    createHouse({ ...randomTask });
-  }
-  console.log('✅ All 7 houses created!');
-}
-
-function updateStats() {
-  document.getElementById('saved-count').textContent = savedCount;
-  document.getElementById('burned-count').textContent = burnedCount;
-  document.getElementById('active-count').textContent = activeCount;
-}
-
-function createHouse(task) {
-  activeCount++;
-  updateStats();
-  
-  const house = document.createElement('div');
-  house.classList.add('house');
-  house.innerHTML = `
-    <button class="dispatch-btn" title="Quick Deploy Firetruck">
-      <span class="dispatch-icon">🚒</span>
-      <span class="dispatch-text">Dispatch Unit</span>
-    </button>
-    <div class="house-badge-carousel">
-      <button class="carousel-arrow carousel-left" title="Previous category">‹</button>
-      <div class="house-badge" data-category="0">
-        <div class="house-badge-icon">🏠</div>
-        <div class="house-badge-label">Home</div>
-      </div>
-      <button class="carousel-arrow carousel-right" title="Next category">›</button>
-    </div>
-    <div class="house-structure">
-      <div class="chimney">
-        <div class="chimney-top"></div>
-      </div>
-      <div class="roof">
-        <div class="roof-ridge"></div>
-      </div>
-      <div class="house-body">
-        <div class="window window-left">
-          <div class="window-pane"></div>
-          <div class="window-pane"></div>
-          <div class="window-pane"></div>
-          <div class="window-pane"></div>
-          <div class="window-shine"></div>
+    <!-- Authentication Container -->
+    <div id="authContainer">
+        <div class="auth-header">
+            <div class="fire-truck-container">
+                <div class="smoke"></div>
+                <div class="smoke"></div>
+                <div class="smoke"></div>
+                <div class="fire-truck-icon">🚒</div>
+            </div>
+            <h1>Task Rescue</h1>
+            <p class="auth-subtitle">Firefighter Mission Control</p>
+            <p class="auth-tagline">Save your tasks from burning down</p>
         </div>
-        <div class="door">
-          <div class="door-knob"></div>
-          <div class="door-window"></div>
+        
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="login">Login</button>
+            <button class="auth-tab" data-tab="signup">Sign Up</button>
         </div>
-        <div class="window window-right">
-          <div class="window-pane"></div>
-          <div class="window-pane"></div>
-          <div class="window-pane"></div>
-          <div class="window-pane"></div>
-          <div class="window-shine"></div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="auth-form active">
+            <div class="form-group">
+                <label for="loginEmail">Email Address</label>
+                <div class="input-wrapper">
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                    <div class="input-icon">📧</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    <div class="input-icon">🔒</div>
+                </div>
+            </div>
+            <button class="auth-button" onclick="handleLogin()">🚒 Start Mission</button>
         </div>
-      </div>
-      <div class="foundation"></div>
-      <div class="walkway"></div>
-      <div class="lawn"></div>
-    </div>
-    <div class="smoke"></div>
-    <div class="embers">
-      <div class="ember" style="left: 10px; animation-delay: 0s;"></div>
-      <div class="ember" style="left: 20px; animation-delay: 0.2s;"></div>
-      <div class="ember" style="left: 30px; animation-delay: 0.4s;"></div>
-    </div>
-    <div class="flames">
-      <div class="flame" style="left: 10px;"></div>
-      <div class="flame" style="left: 25px; animation-delay: 0.15s;"></div>
-      <div class="flame" style="left: 40px; animation-delay: 0.3s;"></div>
-    </div>
-    <div class="task-info">
-      <div class="task-title">${task.title}</div>
-      <div class="time-mode-selector">
-        <button class="mode-btn active" data-mode="duration">⏱️ Duration</button>
-        <button class="mode-btn" data-mode="deadline">📅 Deadline</button>
-      </div>
-      
-      <!-- Duration Mode -->
-      <div class="time-controls duration-mode">
-        <button class="time-btn minus" title="Decrease time">−</button>
-        <input type="number" class="timer-value" value="1" min="1" max="999">
-        <select class="time-unit">
-          <option value="seconds">Seconds</option>
-          <option value="minutes" selected>Minutes</option>
-          <option value="hours">Hours</option>
-          <option value="days">Days</option>
-          <option value="weeks">Weeks</option>
-          <option value="months">Months</option>
-        </select>
-        <button class="time-btn plus" title="Increase time">+</button>
-      </div>
-      
-      <!-- Deadline Mode -->
-      <div class="time-controls deadline-mode" style="display: none;">
-        <input type="datetime-local" class="deadline-picker">
-        <select class="timezone-selector">
-          <option value="local">Local Time</option>
-          <option value="America/New_York">EST (New York)</option>
-          <option value="America/Chicago">CST (Chicago)</option>
-          <option value="America/Denver">MST (Denver)</option>
-          <option value="America/Los_Angeles">PST (Los Angeles)</option>
-          <option value="Europe/London">GMT (London)</option>
-          <option value="Europe/Paris">CET (Paris)</option>
-          <option value="Asia/Tokyo">JST (Tokyo)</option>
-          <option value="Asia/Dubai">GST (Dubai)</option>
-          <option value="Australia/Sydney">AEDT (Sydney)</option>
-        </select>
-      </div>
-      
-      <div class="timer">--:--:--</div>
-      <div class="timer-breakdown"></div>
-      <div class="status">⏸️ Ready to Start</div>
-    </div>
-    <div class="controls">
-      <button class="button btn-start">▶️ Start Clock</button>
-      <button class="button btn-deploy" style="display:none;">🚒 Deploy Fire Truck</button>
-    </div>
-    <div class="firetruck">
-      <div class="water-spray"></div>
-      <div class="water-drops">
-        <div class="water-drop" style="left: 10px; top: 20px; animation-delay: 0s;"></div>
-        <div class="water-drop" style="left: 30px; top: 15px; animation-delay: 0.1s;"></div>
-        <div class="water-drop" style="left: 50px; top: 25px; animation-delay: 0.2s;"></div>
-        <div class="water-drop" style="left: 70px; top: 20px; animation-delay: 0.3s;"></div>
-        <div class="water-drop" style="left: 20px; top: 30px; animation-delay: 0.15s;"></div>
-        <div class="water-drop" style="left: 40px; top: 10px; animation-delay: 0.25s;"></div>
-      </div>
-    </div>
-  `;
-  
-  // Get all elements
-  const modeBtns = house.querySelectorAll('.mode-btn');
-  const durationMode = house.querySelector('.duration-mode');
-  const deadlineMode = house.querySelector('.deadline-mode');
-  const timerValue = house.querySelector('.timer-value');
-  const timeUnit = house.querySelector('.time-unit');
-  const deadlinePicker = house.querySelector('.deadline-picker');
-  const timezoneSelector = house.querySelector('.timezone-selector');
-  const minusBtn = house.querySelector('.time-btn.minus');
-  const plusBtn = house.querySelector('.time-btn.plus');
-  const startBtn = house.querySelector('.btn-start');
-  const deployBtn = house.querySelector('.btn-deploy');
-  const timer = house.querySelector('.timer');
-  const timerBreakdown = house.querySelector('.timer-breakdown');
-  const status = house.querySelector('.status');
-  const smoke = house.querySelector('.smoke');
-  const embers = house.querySelector('.embers');
-  const flames = house.querySelector('.flames');
-  const truck = house.querySelector('.firetruck');
-  const spray = house.querySelector('.water-spray');
-  const roof = house.querySelector('.roof');
-  const chimney = house.querySelector('.chimney');
-  
-  // Carousel elements and data
-  const carouselLeft = house.querySelector('.carousel-left');
-  const carouselRight = house.querySelector('.carousel-right');
-  const carouselContainer = house.querySelector('.house-badge-carousel');
-  const badge = house.querySelector('.house-badge');
-  const badgeIcon = house.querySelector('.house-badge-icon');
-  const badgeLabel = house.querySelector('.house-badge-label');
-  const dispatchBtn = house.querySelector('.dispatch-btn');
-  
-  const categories = [
-    { icon: '🏠', label: 'Home', category: 0 },
-    { icon: '💼', label: 'Work', category: 1 },
-    { icon: '💪', label: 'Health', category: 2 },
-    { icon: '📚', label: 'Education', category: 3 },
-    { icon: '💰', label: 'Finance', category: 4 },
-    { icon: '👥', label: 'Social', category: 5 },
-    { icon: '🎨', label: 'Creative', category: 6 }
-  ];
-  
-  let currentCategory = 0;
-  
-  function updateBadge(direction) {
-    // Add exit animation
-    badge.style.opacity = '0';
-    badge.style.transform = direction === 'left' ? 'translateX(20px)' : 'translateX(-20px)';
-    
-    // Trigger house morphing animation
-    house.classList.add('category-changing');
-    
-    setTimeout(() => {
-      // Update category
-      badgeIcon.textContent = categories[currentCategory].icon;
-      badgeLabel.textContent = categories[currentCategory].label;
-      badge.setAttribute('data-category', categories[currentCategory].category);
-      carouselContainer.setAttribute('data-category-info', `${currentCategory + 1} of 7`);
-      
-      // Update house appearance to match category
-      house.setAttribute('data-house-category', categories[currentCategory].category);
-      
-      // Add enter animation
-      badge.style.transform = direction === 'left' ? 'translateX(-20px)' : 'translateX(20px)';
-      
-      setTimeout(() => {
-        badge.style.opacity = '1';
-        badge.style.transform = 'translateX(0)';
-        house.classList.remove('category-changing');
-      }, 50);
-    }, 200);
-  }
-  
-  // Initialize category info and house appearance
-  carouselContainer.setAttribute('data-category-info', '1 of 7');
-  house.setAttribute('data-house-category', '0');
-  
-  carouselLeft.addEventListener('click', () => {
-    currentCategory = (currentCategory - 1 + categories.length) % categories.length;
-    updateBadge('right');
-  });
-  
-  carouselRight.addEventListener('click', () => {
-    currentCategory = (currentCategory + 1) % categories.length;
-    updateBadge('left');
-  });
-  
-  // Dispatch button functionality
-  dispatchBtn.addEventListener('click', () => {
-    if (dispatchBtn.classList.contains('dispatched')) return;
-    
-    if (isRunning && !isPaused) {
-      // Task is running, deploy immediately
-      deployBtn.click();
-      
-      // Mark as dispatched
-      dispatchBtn.classList.add('dispatched');
-      dispatchBtn.innerHTML = '<span style="font-size:1.2rem;">✅</span><span style="font-size:0.75rem;">Unit Dispatched</span>';
-      
-      // Show mini notification
-      const miniToast = document.createElement('div');
-      miniToast.style.cssText = `
-        position: fixed;
-        top: 90px;
-        right: 20px;
-        background: linear-gradient(135deg, rgba(52,152,219,0.95), rgba(41,128,185,0.95));
-        color: white;
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        z-index: 9999;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        animation: slideInRight 0.3s ease-out;
-        border: 1px solid rgba(255,255,255,0.3);
-      `;
-      miniToast.textContent = '🚒 Unit dispatched!';
-      document.body.appendChild(miniToast);
-      
-      setTimeout(() => {
-        miniToast.style.animation = 'slideInRight 0.3s ease-out reverse';
-        setTimeout(() => miniToast.remove(), 300);
-      }, 2000);
-      
-    } else {
-      // Task not started yet
-      const quickDeploy = confirm('🚒 Quick Deploy?\n\nThis will start the timer and immediately deploy the firetruck to complete this task.');
-      if (quickDeploy) {
-        // Start the timer
-        startBtn.click();
-        // Wait a moment then deploy
-        setTimeout(() => {
-          if (deployBtn && !deployBtn.disabled) {
-            deployBtn.click();
-            dispatchBtn.classList.add('dispatched');
-            dispatchBtn.innerHTML = '<span style="font-size:1.2rem;">✅</span><span style="font-size:0.75rem;">Unit Dispatched</span>';
-            
-            // Show mini notification
-            const miniToast = document.createElement('div');
-            miniToast.style.cssText = `
-              position: fixed;
-              top: 90px;
-              right: 20px;
-              background: linear-gradient(135deg, rgba(52,152,219,0.95), rgba(41,128,185,0.95));
-              color: white;
-              padding: 0.75rem 1rem;
-              border-radius: 8px;
-              font-size: 0.85rem;
-              font-weight: 600;
-              z-index: 9999;
-              box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-              animation: slideInRight 0.3s ease-out;
-              border: 1px solid rgba(255,255,255,0.3);
-            `;
-            miniToast.textContent = '🚒 Unit dispatched!';
-            document.body.appendChild(miniToast);
-            
-            setTimeout(() => {
-              miniToast.style.animation = 'slideInRight 0.3s ease-out reverse';
-              setTimeout(() => miniToast.remove(), 300);
-            }, 2000);
-          }
-        }, 500);
-      }
-    }
-  });
-  
-  let t = 60; // seconds
-  let originalTime = 60;
-  let interval = null;
-  let isRunning = false;
-  let isPaused = false;
-  let currentMode = 'duration';
-  let deadlineTime = null;
-  
-  // Helper function: Convert time units to seconds
-  function convertToSeconds(value, unit) {
-    const conversions = {
-      seconds: 1,
-      minutes: 60,
-      hours: 3600,
-      days: 86400,
-      weeks: 604800,
-      months: 2592000 // 30 days
-    };
-    return value * conversions[unit];
-  }
-  
-  // Helper function: Format time display
-  function formatTime(seconds) {
-    if (seconds < 0) seconds = 0;
-    
-    const days = Math.floor(seconds / 86400);
-    const hours = Math.floor((seconds % 86400) / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    
-    if (days > 0) {
-      return `${days}d ${hours}h ${mins}m`;
-    } else if (hours > 0) {
-      return `${hours}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-    } else {
-      return `${mins}:${String(secs).padStart(2,'0')}`;
-    }
-  }
-  
-  // Helper function: Get time breakdown
-  function getTimeBreakdown(seconds) {
-    if (seconds < 0) return '';
-    
-    const days = Math.floor(seconds / 86400);
-    const hours = Math.floor((seconds % 86400) / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    
-    const parts = [];
-    if (days > 0) parts.push(`${days}d`);
-    if (hours > 0) parts.push(`${hours}h`);
-    if (mins > 0) parts.push(`${mins}m`);
-    if (secs > 0 || parts.length === 0) parts.push(`${secs}s`);
-    
-    return parts.join(' ');
-  }
-  
-  // Mode switching
-  modeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (isRunning) return;
-      
-      modeBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentMode = btn.dataset.mode;
-      
-      if (currentMode === 'duration') {
-        durationMode.style.display = 'flex';
-        deadlineMode.style.display = 'none';
-        updateDurationTime();
-      } else {
-        durationMode.style.display = 'none';
-        deadlineMode.style.display = 'flex';
-        timer.textContent = '--:--:--';
-        timerBreakdown.textContent = 'Set a deadline';
-      }
-    });
-  });
-  
-  // Update duration time
-  function updateDurationTime() {
-    const value = parseInt(timerValue.value);
-    const unit = timeUnit.value;
-    t = convertToSeconds(value, unit);
-    originalTime = t;
-    timer.textContent = formatTime(t);
-    timerBreakdown.textContent = getTimeBreakdown(t);
-  }
-  
-  // Duration controls
-  minusBtn.addEventListener('click', () => {
-    if (!isRunning && currentMode === 'duration') {
-      const newValue = Math.max(1, parseInt(timerValue.value) - 1);
-      timerValue.value = newValue;
-      updateDurationTime();
-    }
-  });
-  
-  plusBtn.addEventListener('click', () => {
-    if (!isRunning && currentMode === 'duration') {
-      const newValue = Math.min(999, parseInt(timerValue.value) + 1);
-      timerValue.value = newValue;
-      updateDurationTime();
-    }
-  });
-  
-  timerValue.addEventListener('change', () => {
-    if (!isRunning && currentMode === 'duration') {
-      let newValue = parseInt(timerValue.value);
-      if (isNaN(newValue) || newValue < 1) newValue = 1;
-      if (newValue > 999) newValue = 999;
-      timerValue.value = newValue;
-      updateDurationTime();
-    }
-  });
-  
-  timeUnit.addEventListener('change', () => {
-    if (!isRunning && currentMode === 'duration') {
-      updateDurationTime();
-    }
-  });
-  
-  // Deadline controls
-  deadlinePicker.addEventListener('change', () => {
-    if (!isRunning && currentMode === 'deadline') {
-      if (deadlinePicker.value) {
-        deadlineTime = new Date(deadlinePicker.value);
-        const now = new Date();
-        t = Math.floor((deadlineTime - now) / 1000);
-        originalTime = t;
-        
-        if (t > 0) {
-          timer.textContent = formatTime(t);
-          timerBreakdown.textContent = deadlineTime.toLocaleString();
-        } else {
-          timer.textContent = 'Past due';
-          timerBreakdown.textContent = 'Select future date';
-        }
-      }
-    }
-  });
-  
-  // Initialize
-  updateDurationTime();
-  
-  // Start/Pause/Resume button
-  startBtn.addEventListener('click', () => {
-    if (!isRunning && !isPaused) {
-      // Validate
-      if (currentMode === 'deadline' && (!deadlinePicker.value || t <= 0)) {
-        alert('Please select a valid future deadline');
-        return;
-      }
-      
-      // Start the clock
-      isRunning = true;
-      startBtn.textContent = '⏸️ Pause Clock';
-      startBtn.classList.add('paused');
-      deployBtn.style.display = 'block';
-      status.textContent = '▶️ Running';
-      status.classList.add('running');
-      durationMode.style.opacity = '0.3';
-      durationMode.style.pointerEvents = 'none';
-      deadlineMode.style.opacity = '0.3';
-      deadlineMode.style.pointerEvents = 'none';
-      modeBtns.forEach(btn => btn.disabled = true);
-      carouselLeft.disabled = true;
-      carouselRight.disabled = true;
-      carouselLeft.style.opacity = '0.3';
-      carouselRight.style.opacity = '0.3';
-      carouselLeft.style.cursor = 'not-allowed';
-      carouselRight.style.cursor = 'not-allowed';
-      
-      // Show dispatch button
-      dispatchBtn.classList.add('active');
-      
-      interval = setInterval(() => {
-        t--;
-        timer.textContent = formatTime(t);
-        
-        if (currentMode === 'deadline' && t > 60) {
-          timerBreakdown.textContent = 'Due: ' + deadlineTime.toLocaleString();
-        } else {
-          timerBreakdown.textContent = getTimeBreakdown(t);
-        }
-        
-        // Visual progression
-        const percentage = (t / originalTime) * 100;
-        
-        if (percentage < 66.67 && percentage >= 33.33) {
-          smoke.style.opacity = 1;
-          smoke.style.left = 'calc(50% + 40px)';
-          timer.classList.add('warning');
-          house.classList.add('warning');
-          chimney.style.animation = 'pulse 2s infinite';
-        }
-        
-        if (percentage < 33.33 && percentage > 0) {
-          smoke.style.opacity = 0.5;
-          smoke.style.left = '50%';
-          embers.style.opacity = 1;
-          timer.classList.remove('warning');
-          timer.classList.add('critical');
-          house.classList.remove('warning');
-          house.classList.add('critical');
-          roof.style.borderBottomColor = '#f39c12';
-          chimney.style.animation = 'none';
-        }
-        
-        if (t <= 0) {
-          clearInterval(interval);
-          flames.style.opacity = 1;
-          smoke.style.opacity = 0;
-          embers.style.opacity = 0;
-          roof.style.borderBottomColor = '#e74c3c';
-          startBtn.disabled = true;
-          deployBtn.disabled = true;
-          deployBtn.textContent = '💀 Too Late';
-          status.textContent = '🔥 BURNED!';
-          status.style.color = 'var(--danger)';
-          
-          // Badge burned state
-          const badgeIcon1 = house.querySelector('.house-badge-icon');
-          if (badgeIcon1) {
-            badgeIcon1.style.background = 'radial-gradient(circle, #555, #333)';
-            badgeIcon1.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
-            badgeIcon1.style.animation = 'none';
-          }
-          
-          currentTaskElement = house;
-          currentTask = { ...task, title: house.querySelector('.task-title').textContent };
-          openModal('burn-modal');
-        }
-      }, 1000);
-      
-    } else if (isRunning && !isPaused) {
-      // Pause
-      isPaused = true;
-      isRunning = false;
-      clearInterval(interval);
-      startBtn.textContent = '▶️ Resume Clock';
-      startBtn.classList.remove('paused');
-      deployBtn.style.display = 'none';
-      status.textContent = '⏸️ Paused';
-      status.classList.remove('running');
-      status.classList.add('paused');
-      carouselLeft.disabled = false;
-      carouselRight.disabled = false;
-      carouselLeft.style.opacity = '1';
-      carouselRight.style.opacity = '1';
-      carouselLeft.style.cursor = 'pointer';
-      carouselRight.style.cursor = 'pointer';
-      
-      // Hide dispatch button when paused
-      dispatchBtn.classList.remove('active');
-      
-    } else if (!isRunning && isPaused) {
-      // Resume
-      isRunning = true;
-      isPaused = false;
-      startBtn.textContent = '⏸️ Pause Clock';
-      startBtn.classList.add('paused');
-      deployBtn.style.display = 'block';
-      status.textContent = '▶️ Running';
-      status.classList.remove('paused');
-      status.classList.add('running');
-      carouselLeft.disabled = true;
-      carouselRight.disabled = true;
-      carouselLeft.style.opacity = '0.3';
-      carouselRight.style.opacity = '0.3';
-      carouselLeft.style.cursor = 'not-allowed';
-      carouselRight.style.cursor = 'not-allowed';
-      
-      // Show dispatch button when resumed
-      if (!dispatchBtn.classList.contains('dispatched')) {
-        dispatchBtn.classList.add('active');
-      }
-      
-      interval = setInterval(() => {
-        t--;
-        timer.textContent = formatTime(t);
-        
-        if (currentMode === 'deadline' && t > 60) {
-          timerBreakdown.textContent = 'Due: ' + deadlineTime.toLocaleString();
-        } else {
-          timerBreakdown.textContent = getTimeBreakdown(t);
-        }
-        
-        const percentage = (t / originalTime) * 100;
-        
-        if (percentage < 66.67 && percentage >= 33.33) {
-          smoke.style.opacity = 1;
-          smoke.style.left = 'calc(50% + 40px)';
-          timer.classList.add('warning');
-          house.classList.add('warning');
-          chimney.style.animation = 'pulse 2s infinite';
-        }
-        
-        if (percentage < 33.33 && percentage > 0) {
-          smoke.style.opacity = 0.5;
-          smoke.style.left = '50%';
-          embers.style.opacity = 1;
-          timer.classList.remove('warning');
-          timer.classList.add('critical');
-          house.classList.remove('warning');
-          house.classList.add('critical');
-          roof.style.borderBottomColor = '#f39c12';
-          chimney.style.animation = 'none';
-        }
-        
-        if (t <= 0) {
-          clearInterval(interval);
-          flames.style.opacity = 1;
-          smoke.style.opacity = 0;
-          embers.style.opacity = 0;
-          roof.style.borderBottomColor = '#e74c3c';
-          startBtn.disabled = true;
-          deployBtn.disabled = true;
-          deployBtn.textContent = '💀 Too Late';
-          status.textContent = '🔥 BURNED!';
-          status.style.color = 'var(--danger)';
-          
-          // Badge burned state
-          const badgeIcon2 = house.querySelector('.house-badge-icon');
-          if (badgeIcon2) {
-            badgeIcon2.style.background = 'radial-gradient(circle, #555, #333)';
-            badgeIcon2.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
-            badgeIcon2.style.animation = 'none';
-          }
-          
-          currentTaskElement = house;
-          currentTask = { ...task, title: house.querySelector('.task-title').textContent };
-          openModal('burn-modal');
-        }
-      }, 1000);
-    }
-  });
-  
-  // Deploy Fire Truck button
-  deployBtn.addEventListener('click', () => {
-    if (isRunning || isPaused) {
-      clearInterval(interval);
-      currentTaskElement = house;
-      currentTask = { 
-        ...task, 
-        title: house.querySelector('.task-title').textContent,
-        timeRemaining: t,
-        originalTime: originalTime
-      };
-      openModal('save-modal');
-    }
-  });
-  
-  house.dataset.interval = interval;
-  document.getElementById('game').appendChild(house);
-}
 
-function openModal(modalId) {
-  document.getElementById(modalId).style.display = 'flex';
-}
-
-function closeModal(modalId) {
-  document.getElementById(modalId).style.display = 'none';
-  if (modalId === 'task-modal') {
-    document.getElementById('task-title-input').value = '';
-    document.getElementById('task-time-input').value = '';
-  }
-}
-
-function confirmSave() {
-  const note = document.getElementById('save-note').value || 'Completed on time';
-  const house = currentTaskElement;
-  const task = currentTask;
-  
-  // Animate firetruck driving to house and spraying water
-  const truck = house.querySelector('.firetruck');
-  const spray = house.querySelector('.water-spray');
-  const waterDrops = house.querySelector('.water-drops');
-  const drops = waterDrops.querySelectorAll('.water-drop');
-  const flames = house.querySelector('.flames');
-  const smoke = house.querySelector('.smoke');
-  const embers = house.querySelector('.embers');
-  const roof = house.querySelector('.roof');
-  const startBtn = house.querySelector('.btn-start');
-  const deployBtn = house.querySelector('.btn-deploy');
-  const status = house.querySelector('.status');
-  const houseBadgeIcon = house.querySelector('.house-badge-icon');
-  
-  // Start animations
-  truck.style.animation = 'drive-and-spray 4s ease-in-out';
-  spray.style.animation = 'spray-water 4s ease-in-out';
-  waterDrops.style.animation = 'water-drops-fall 4s ease-in-out';
-  drops.forEach(drop => {
-    drop.style.animation = 'water-drops-fall 4s ease-in-out';
-  });
-  
-  // Badge success state
-  houseBadgeIcon.style.background = 'radial-gradient(circle, #2ecc71, #27ae60)';
-  houseBadgeIcon.style.boxShadow = '0 0 25px rgba(46, 204, 113, 0.6)';
-  houseBadgeIcon.style.animation = 'glow-success 2s infinite alternate';
-  
-  // Extinguish fire gradually
-  setTimeout(() => {
-    flames.style.opacity = 0;
-    embers.style.opacity = 0;
-  }, 1500);
-  
-  setTimeout(() => {
-    smoke.style.opacity = 0;
-    roof.style.borderBottomColor = '#2ecc71';
-    house.classList.remove('warning', 'critical');
-  }, 2000);
-  
-  startBtn.disabled = true;
-  deployBtn.disabled = true;
-  deployBtn.textContent = '✅ Saved!';
-  deployBtn.style.display = 'block';
-  status.textContent = '🚒 Rescued!';
-  status.style.color = 'var(--safe)';
-  
-  savedCount++;
-  activeCount--;
-  updateStats();
-  
-  // Get category from house badge
-  const categoryAttr = house.querySelector('.house-badge').getAttribute('data-category');
-  const categoryName = house.querySelector('.house-badge-label').textContent;
-  
-  log.push({
-    task: task.title,
-    result: '🚒 Saved',
-    category: parseInt(categoryAttr) || 0,
-    categoryName: categoryName || 'Home',
-    note: note,
-    time: new Date().toLocaleString(),
-    timestamp: Date.now(),
-    duration: task.originalTime || 60 // seconds spent on task
-  });
-  
-  setTimeout(() => {
-    house.remove();
-    // Add a new random task
-    const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
-    createHouse({ ...randomTask });
-  }, 4500);
-  
-  closeModal('save-modal');
-  document.getElementById('save-note').value = '';
-}
-
-function confirmBurn() {
-  const note = document.getElementById('burn-note').value || 'Missed deadline';
-  const house = currentTaskElement;
-  const task = currentTask;
-  
-  burnedCount++;
-  activeCount--;
-  updateStats();
-  
-  // Get category from house badge
-  const categoryAttr = house.querySelector('.house-badge').getAttribute('data-category');
-  const categoryName = house.querySelector('.house-badge-label').textContent;
-  
-  log.push({
-    task: task.title,
-    result: '🔥 Burned',
-    category: parseInt(categoryAttr) || 0,
-    categoryName: categoryName || 'Home',
-    note: note,
-    time: new Date().toLocaleString(),
-    timestamp: Date.now(),
-    duration: task.originalTime || 60 // seconds allocated to task
-  });
-  
-  setTimeout(() => {
-    house.remove();
-    // Add a new random task
-    const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
-    createHouse({ ...randomTask });
-  }, 2000);
-  
-  closeModal('burn-modal');
-  document.getElementById('burn-note').value = '';
-}
-
-function addNewTask() {
-  openModal('task-modal');
-}
-
-function submitNewTask() {
-  const title = document.getElementById('task-title-input').value.trim();
-  const time = parseInt(document.getElementById('task-time-input').value);
-  
-  if (!title || !time || time < 10) {
-    alert('Please enter a valid task name and time (minimum 10 seconds)');
-    return;
-  }
-  
-  createHouse({ title, time });
-  closeModal('task-modal');
-}
-
-function showSummary() {
-  const summaryDiv = document.getElementById('summary-content');
-  
-  if (log.length === 0) {
-    summaryDiv.innerHTML = '<p>No tasks completed yet. Start rescuing some tasks!</p>';
-  } else {
-    const saved = log.filter(l => l.result === '🚒 Saved');
-    const burned = log.filter(l => l.result === '🔥 Burned');
-    
-    let html = `
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
-        <div style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-          <h3 style="margin-top: 0; color: #888; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Success Rate</h3>
-          <p style="font-size: 2.5rem; color: var(--safe); margin: 0; font-weight: 700;">${Math.round((saved.length / log.length) * 100)}%</p>
+        <!-- Sign Up Form -->
+        <div id="signupForm" class="auth-form">
+            <div class="form-group">
+                <label for="signupEmail">Email Address</label>
+                <div class="input-wrapper">
+                    <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                    <div class="input-icon">📧</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="signupPassword" placeholder="Minimum 6 characters" required oninput="checkPasswordStrength(this.value)">
+                    <div class="input-icon">🔒</div>
+                </div>
+                <div class="password-strength" id="passwordStrength">
+                    <div class="password-strength-fill" id="passwordStrengthFill"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="signupPasswordConfirm">Confirm Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="signupPasswordConfirm" placeholder="Re-enter password" required>
+                    <div class="input-icon">✅</div>
+                </div>
+            </div>
+            <button class="auth-button" onclick="handleSignup()">🔥 Join the Team</button>
         </div>
-        <div style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-          <h3 style="margin-top: 0; color: #888; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Rescued</h3>
-          <p style="font-size: 2.5rem; color: var(--safe); margin: 0; font-weight: 700;">${saved.length}</p>
+
+        <div id="authMessage"></div>
+    </div>
+
+    <!-- Game Container -->
+    <div id="gameContainer">
+        <header>
+            <h1 class="game-title">🚒 Firefighter Task Rescue</h1>
+            <div class="user-info" id="userInfo">
+                <span id="userEmail"></span>
+            </div>
+            <p class="tagline">Save your tasks from burning down!</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="completedCount">0</div>
+                <div class="stat-label">🚒 Tasks Saved</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="burnedCount">0</div>
+                <div class="stat-label">🔥 Houses Burned</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="activeCount">7</div>
+                <div class="stat-label">🏠 Active Tasks</div>
+            </div>
         </div>
-        <div style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-          <h3 style="margin-top: 0; color: #888; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Lost</h3>
-          <p style="font-size: 2.5rem; color: var(--danger); margin: 0; font-weight: 700;">${burned.length}</p>
+
+        <div class="controls">
+            <button class="btn btn-reset" onclick="mentalHealthReset()">🕊️ Let It Burn (Mental Health Reset)</button>
+            <button class="btn btn-logout" onclick="handleLogout()">🚪 Logout</button>
         </div>
-      </div>
-      
-      <table class="summary-table">
-        <thead>
-          <tr>
-            <th>Task</th>
-            <th>Result</th>
-            <th>Notes</th>
-            <th>Time</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-    
-    log.forEach(entry => {
-      html += `
-        <tr>
-          <td><strong>${entry.task}</strong></td>
-          <td>${entry.result}</td>
-          <td>${entry.note}</td>
-          <td><small style="color: #888;">${entry.time}</small></td>
-        </tr>
-      `;
-    });
-    
-    html += '</tbody></table>';
-    
-    // Add insights
-    html += '<div style="background: rgba(255,255,255,0.02); padding: 2rem; border-radius: 8px; margin-top: 2rem; border: 1px solid rgba(255,255,255,0.05); text-align: left;">';
-    html += '<h3 style="color: var(--fire); text-transform: uppercase; letter-spacing: 1px;">Mission Debrief</h3>';
-    
-    if (burned.length > 0) {
-      html += '<h4 style="color: var(--danger); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Common Failure Points:</h4><ul style="color: #aaa;">';
-      burned.forEach(b => {
-        html += `<li>${b.task}: ${b.note}</li>`;
-      });
-      html += '</ul>';
-    }
-    
-    if (saved.length > 0) {
-      html += '<h4 style="color: var(--safe); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Success Strategies:</h4><ul style="color: #aaa;">';
-      saved.forEach(s => {
-        html += `<li>${s.task}: ${s.note}</li>`;
-      });
-      html += '</ul>';
-    }
-    
-    html += '<h4 style="color: var(--warning); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Tactical Recommendations:</h4><ul style="color: #aaa;">';
-    if (burned.length > saved.length) {
-      html += '<li>Deploy resources earlier to prevent escalation</li>';
-      html += '<li>Reassess time allocation protocols</li>';
-      html += '<li>Identify and neutralize distraction factors</li>';
-    } else {
-      html += '<li>Mission objectives achieved - maintain current protocols</li>';
-      html += '<li>Consider increasing operational complexity</li>';
-    }
-    html += '</ul></div>';
-    
-    summaryDiv.innerHTML = html;
-  }
-  
-  document.getElementById('game').style.display = 'none';
-  document.getElementById('controls').style.display = 'none';
-  document.querySelector('.firestation-header').style.display = 'none';
-  document.getElementById('summary').style.display = 'block';
-}
 
-function hideSummary() {
-  document.getElementById('summary').style.display = 'none';
-  document.getElementById('game').style.display = 'grid';
-  document.getElementById('controls').style.display = 'block';
-  document.querySelector('.firestation-header').style.display = 'block';
-}
+        <div class="houses-container" id="housesContainer"></div>
+    </div>
 
-function printSummary() {
-  window.print();
-}
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-function resetWeek() {
-  if (confirm('Reset all data and start fresh? This cannot be undone.')) {
-    log = [];
-    savedCount = 0;
-    burnedCount = 0;
-    activeCount = 0;
-    document.getElementById('game').innerHTML = '';
-    updateStats();
-    init();
-  }
-}
+    <script>
+        // SUPABASE CONFIGURATION
+        const SUPABASE_URL = 'https://jytolrylfsgcibwtklrp.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5dG9scnlsZnNnY2lid3RrbHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwNjU3MjEsImV4cCI6MjA3ODY0MTcyMX0.q22DexG-cm5erVJpfY0SeRLfWN3PWRLuLUhqUn3mXOk';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let currentUser = null;
 
-function arsonSpree() {
-  if (confirm('🔥 WARNING: Ignite all active tasks immediately? This will burn everything!')) {
-    const houses = document.querySelectorAll('.house');
-    
-    houses.forEach((house, index) => {
-      setTimeout(() => {
-        const flames = house.querySelector('.flames');
-        const smoke = house.querySelector('.smoke');
-        const embers = house.querySelector('.embers');
-        const roof = house.querySelector('.roof');
-        const startBtn = house.querySelector('.btn-start');
-        const deployBtn = house.querySelector('.btn-deploy');
-        const status = house.querySelector('.status');
-        const timer = house.querySelector('.timer');
-        const taskTitle = house.querySelector('.task-title').textContent;
-        const badgeIcon3 = house.querySelector('.house-badge-icon');
-        
-        // Instant fire effects
-        flames.style.opacity = 1;
-        embers.style.opacity = 1;
-        smoke.style.opacity = 0.8;
-        smoke.style.left = '50%';
-        roof.style.borderBottomColor = '#e74c3c';
-        house.classList.add('critical');
-        
-        // Badge burned state
-        if (badgeIcon3) {
-          badgeIcon3.style.background = 'radial-gradient(circle, #555, #333)';
-          badgeIcon3.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
-          badgeIcon3.style.animation = 'none';
-        }
-        
-        timer.classList.add('critical');
-        timer.textContent = '0s';
-        
-        if (startBtn) startBtn.disabled = true;
-        if (deployBtn) {
-          deployBtn.disabled = true;
-          deployBtn.textContent = '💀 Too Late';
-          deployBtn.style.display = 'block';
-        }
-        if (status) {
-          status.textContent = '🔥 BURNED!';
-          status.style.color = 'var(--danger)';
-        }
-        
-        // Log the arson
-        burnedCount++;
-        activeCount--;
-        updateStats();
-        
-        // Get category from house badge
-        const badgeIcon4 = house.querySelector('.house-badge');
-        const categoryAttr = badgeIcon4 ? badgeIcon4.getAttribute('data-category') : '0';
-        const categoryLabel = house.querySelector('.house-badge-label');
-        const categoryName = categoryLabel ? categoryLabel.textContent : 'Home';
-        
-        log.push({
-          task: taskTitle,
-          result: '🔥 Burned',
-          category: parseInt(categoryAttr) || 0,
-          categoryName: categoryName,
-          note: 'Arson Spree - Intentional ignition',
-          time: new Date().toLocaleString(),
-          timestamp: Date.now(),
-          duration: 0 // burned before completion
+        // Tab switching
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                document.getElementById(tabName + 'Form').classList.add('active');
+                
+                showAuthMessage('', false);
+            });
         });
-        
-        // Remove house and add new one
-        setTimeout(() => {
-          house.remove();
-          const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
-          createHouse({ ...randomTask });
-        }, 2000);
-      }, index * 300); // Stagger the ignition for dramatic effect
-    });
-  }
-}
 
-function showMentalHealthModal() {
-  openModal('mental-health-modal');
-}
+        // Handle Enter key
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const form = e.target.closest('.auth-form');
+                    if (form.id === 'loginForm') handleLogin();
+                    else if (form.id === 'signupForm') handleSignup();
+                }
+            });
+        });
 
-function showEncouragement() {
-  closeModal('mental-health-modal');
-  openModal('encouragement-modal');
-}
-
-function confirmArsonWithSupport() {
-  closeModal('encouragement-modal');
-  
-  // Clear all houses with gentle animation
-  const houses = document.querySelectorAll('.house');
-  houses.forEach((house, index) => {
-    setTimeout(() => {
-      house.style.opacity = '0';
-      house.style.transform = 'scale(0.8)';
-      setTimeout(() => {
-        house.remove();
-        activeCount--;
-        updateStats();
-      }, 500);
-    }, index * 150);
-  });
-  
-  // Add fresh tasks after clearing
-  setTimeout(() => {
-    for (let i = 0; i < 7; i++) {
-      setTimeout(() => {
-        const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
-        createHouse({ ...randomTask });
-      }, i * 300);
-    }
-  }, houses.length * 150 + 500);
-}
-
-function deployAllFiretrucks() {
-  const houses = document.querySelectorAll('.house');
-  const runningHouses = Array.from(houses).filter(house => {
-    const deployBtn = house.querySelector('.btn-deploy');
-    return deployBtn && !deployBtn.disabled && deployBtn.style.display !== 'none';
-  });
-  
-  if (runningHouses.length === 0) {
-    alert('🚒 No active fires detected! All tasks are either not started or already handled.');
-    return;
-  }
-  
-  if (!confirm(`🚒 Deploy ${runningHouses.length} firetruck${runningHouses.length > 1 ? 's' : ''} to rescue all active tasks?\n\nThis will complete all running tasks immediately!`)) {
-    return;
-  }
-  
-  // Show initial toast notification
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.innerHTML = `
-    <span class="toast-icon">🚨</span>
-    <div>
-      <div style="font-size: 0.9rem;">Emergency Deployment Active</div>
-      <div style="font-size: 0.75rem; opacity: 0.9;">Dispatching ${runningHouses.length} unit${runningHouses.length > 1 ? 's' : ''}...</div>
-    </div>
-  `;
-  document.body.appendChild(toast);
-  
-  let completedCount = 0;
-  
-  // Deploy to each running task with staggered timing
-  runningHouses.forEach((house, index) => {
-    setTimeout(() => {
-      const deployBtn = house.querySelector('.btn-deploy');
-      const taskTitle = house.querySelector('.task-title').textContent;
-      
-      // Update toast with current deployment
-      toast.innerHTML = `
-        <span class="toast-icon">🚒</span>
-        <div>
-          <div style="font-size: 0.9rem;">Unit ${index + 1}/${runningHouses.length} Deployed</div>
-          <div style="font-size: 0.75rem; opacity: 0.9;">Rescuing: ${taskTitle.substring(0, 30)}${taskTitle.length > 30 ? '...' : ''}</div>
-        </div>
-      `;
-      
-      // Flash the house to indicate deployment
-      house.style.border = '2px solid #3498db';
-      house.style.boxShadow = '0 0 30px rgba(52,152,219,0.5)';
-      
-      // Trigger the deployment
-      if (deployBtn && !deployBtn.disabled) {
-        deployBtn.click();
-        
-        // Auto-confirm the save modal after a brief moment
-        setTimeout(() => {
-          const saveNote = document.getElementById('save-note');
-          if (saveNote) {
-            saveNote.value = `Mass deployment - Emergency rescue operation`;
-          }
-          
-          // Find and click confirm button
-          const confirmBtn = document.querySelector('#save-modal .button');
-          if (confirmBtn) {
-            confirmBtn.click();
-            completedCount++;
-          }
-        }, 300);
-      }
-      
-      // Reset border after deployment
-      setTimeout(() => {
-        house.style.border = '2px solid transparent';
-        house.style.boxShadow = '';
-      }, 1000);
-      
-    }, index * 800); // Stagger deployments for dramatic effect
-  });
-  
-  // Show completion message
-  const totalTime = runningHouses.length * 800 + 2000;
-  setTimeout(() => {
-    // Update toast to completion status
-    toast.innerHTML = `
-      <span style="font-size: 1.5rem;">✅</span>
-      <div>
-        <div style="font-size: 0.9rem;">Mission Complete!</div>
-        <div style="font-size: 0.75rem; opacity: 0.9;">${runningHouses.length} task${runningHouses.length > 1 ? 's' : ''} rescued</div>
-      </div>
-    `;
-    toast.style.background = 'linear-gradient(135deg, rgba(46,204,113,0.95), rgba(39,174,96,0.95))';
-    
-    // Remove toast after 3 seconds
-    setTimeout(() => {
-      toast.style.animation = 'slideInRight 0.4s ease-out reverse';
-      setTimeout(() => toast.remove(), 400);
-    }, 3000);
-    
-    updateStats();
-    if (typeof updateDashboard === 'function') {
-      updateDashboard();
-    }
-  }, totalTime);
-}
-
-// Initialize game
-init();
-updateStats();
-
-/* ========== PERSISTENCE + ANALYTICS MODULE ========== */
-
-// Chart.js CDN is loaded in head
-const STORAGE_KEY = "firefighter_tasks_v1";
-const SUMMARY_KEY = "firefighter_summary_v1";
-
-/* Local Storage Helpers */
-function saveState() {
-  const houses = Array.from(document.querySelectorAll('.house'));
-  const tasks = houses.map(house => {
-    const title = house.querySelector('.task-title').textContent;
-    const category = house.querySelector('.house-badge').getAttribute('data-category') || '0';
-    return { 
-      title, 
-      category: parseInt(category),
-      time: 60 
-    };
-  });
-  
-  const state = { 
-    log, 
-    tasks,
-    savedCount,
-    burnedCount,
-    activeCount
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-function loadState() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  if (!data) return null;
-  return JSON.parse(data);
-}
-
-function clearState() {
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(SUMMARY_KEY);
-}
-
-/* Weekly Summary Storage */
-function storeWeeklySummary() {
-  const week = new Date().toLocaleDateString(undefined, { week: "numeric" });
-  const summary = JSON.parse(localStorage.getItem(SUMMARY_KEY) || "{}");
-  summary[week] = log;
-  localStorage.setItem(SUMMARY_KEY, JSON.stringify(summary));
-}
-
-/* Auto-save every 10 seconds */
-setInterval(saveState, 10000);
-
-/* Chart variable */
-let taskChart = null;
-
-/* Initialize Dashboard - called after DOM is ready */
-function initializeDashboard() {
-  // Create Dashboard Section
-  const dashboardSection = document.createElement("section");
-  dashboardSection.id = "analytics-dashboard";
-  dashboardSection.style.cssText = `
-    max-width: 1400px;
-    margin: 3rem auto;
-    padding: 2rem;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 12px;
-  `;
-
-  dashboardSection.innerHTML = `
-    <h2 style="text-align:center; color:var(--fire); margin-bottom:2rem; font-size:1.8rem; text-transform:uppercase; letter-spacing:1px;">
-      📊 Station Analytics Dashboard
-    </h2>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:center;">
-      <div style="background:rgba(255,255,255,0.02); padding:2rem; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
-        <canvas id="taskChart" style="max-height:300px;"></canvas>
-      </div>
-      <div id="dashboard-stats" style="display:flex; flex-direction:column; gap:1rem;">
-        <div style="background:rgba(46,204,113,0.1); padding:1.5rem; border-radius:12px; border-left:4px solid #2ecc71;">
-          <div style="font-size:0.85rem; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.5rem;">Rescued Tasks</div>
-          <div style="font-size:2.5rem; color:#2ecc71; font-weight:700;" id="chart-saved">0</div>
-        </div>
-        <div style="background:rgba(231,76,60,0.1); padding:1.5rem; border-radius:12px; border-left:4px solid #e74c3c;">
-          <div style="font-size:0.85rem; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.5rem;">Burned Tasks</div>
-          <div style="font-size:2.5rem; color:#e74c3c; font-weight:700;" id="chart-burned">0</div>
-        </div>
-        <div style="background:rgba(243,156,18,0.1); padding:1.5rem; border-radius:12px; border-left:4px solid #f39c12;">
-          <div style="font-size:0.85rem; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.5rem;">Success Rate</div>
-          <div style="font-size:2.5rem; color:#f8c471; font-weight:700;" id="chart-rate">0%</div>
-        </div>
-      </div>
-    </div>
-    <div style="text-align:center; margin-top:2rem;">
-      <button class="control-btn btn-reset" onclick="resetGameData()" style="min-width:250px; margin:0;">
-        <span style="font-size:1.2rem;">🗑️</span>
-        <div style="display:flex; flex-direction:column; gap:0.1rem; align-items:center;">
-          <span style="font-size:0.7rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px;">Clear Analytics</span>
-          <span style="font-size:1.1rem; font-weight:700;">Reset Data</span>
-        </div>
-      </button>
-    </div>
-  `;
-
-  // Insert dashboard before the summary section
-  const summarySection = document.getElementById("summary");
-  summarySection.parentNode.insertBefore(dashboardSection, summarySection);
-
-  // Initialize Chart.js after canvas is in DOM
-  const ctx = document.getElementById("taskChart").getContext("2d");
-  taskChart = new Chart(ctx, {
-    type: "doughnut",
-    data: {
-      labels: ["🚒 Rescued", "🔥 Burned", "📋 Active"],
-      datasets: [{
-        data: [0, 0, 0],
-        backgroundColor: ["#2ecc71", "#e74c3c", "#f39c12"],
-        borderWidth: 3,
-        borderColor: "#0d0d0d"
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { 
-          position: "bottom",
-          labels: { 
-            color: "#f2f2f2",
-            font: { size: 14 },
-            padding: 15
-          }
-        },
-        tooltip: {
-          backgroundColor: "rgba(0,0,0,0.8)",
-          titleColor: "#fff",
-          bodyColor: "#fff",
-          borderColor: "rgba(255,255,255,0.2)",
-          borderWidth: 1
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            const strengthBar = document.getElementById('passwordStrength');
+            const strengthFill = document.getElementById('passwordStrengthFill');
+            
+            if (password.length === 0) {
+                strengthBar.classList.remove('show');
+                return;
+            }
+            
+            strengthBar.classList.add('show');
+            let strength = 0;
+            
+            if (password.length >= 6) strength += 33;
+            if (password.length >= 10) strength += 33;
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength += 17;
+            if (/[0-9]/.test(password)) strength += 17;
+            
+            strengthFill.style.width = strength + '%';
         }
-      }
-    }
-  });
-  
-  // Initial update
-  updateDashboard();
-}
 
-/* Update Dashboard */
-function updateDashboard() {
-  if (!taskChart) return; // Chart not initialized yet
-  
-  const rescued = log.filter(l => l.result.includes("Saved")).length;
-  const burned = log.filter(l => l.result.includes("Burned")).length;
-  const active = activeCount;
-  const total = rescued + burned || 1;
-  const successRate = Math.round((rescued / total) * 100);
-  
-  taskChart.data.datasets[0].data = [rescued, burned, active];
-  taskChart.update();
-  
-  document.getElementById("chart-saved").textContent = rescued;
-  document.getElementById("chart-burned").textContent = burned;
-  document.getElementById("chart-rate").textContent = isNaN(successRate) ? "0%" : successRate + "%";
-}
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
 
-/* Restore on Page Load */
-window.addEventListener("DOMContentLoaded", () => {
-  // Initialize dashboard first
-  initializeDashboard();
-  
-  // Then restore saved state
-  const saved = loadState();
-  if (saved && saved.tasks && saved.tasks.length) {
-    document.getElementById("game").innerHTML = "";
-    saved.tasks.forEach(t => {
-      const task = { ...t, time: 60 };
-      createHouse(task);
-    });
-    log = saved.log || [];
-    savedCount = saved.savedCount || 0;
-    burnedCount = saved.burnedCount || 0;
-    activeCount = saved.activeCount || saved.tasks.length;
-    updateStats();
-    updateDashboard();
-  }
-});
+            if (!email || !password) {
+                showAuthMessage('Please fill in all fields', false);
+                return;
+            }
 
-/* Hook into existing functions to trigger updates */
-const originalConfirmSave = confirmSave;
-confirmSave = function() {
-  originalConfirmSave();
-  setTimeout(() => {
-    updateDashboard();
-    saveState();
-  }, 100);
-};
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
 
-const originalConfirmBurn = confirmBurn;
-confirmBurn = function() {
-  originalConfirmBurn();
-  setTimeout(() => {
-    updateDashboard();
-    saveState();
-  }, 100);
-};
+                if (error) throw error;
 
-const originalConfirmArsonWithSupport = confirmArsonWithSupport;
-confirmArsonWithSupport = function() {
-  originalConfirmArsonWithSupport();
-  setTimeout(() => {
-    updateDashboard();
-    saveState();
-  }, 100);
-};
+                currentUser = data.user;
+                showGame();
+                await loadUserTasks();
+            } catch (error) {
+                showAuthMessage(error.message, false);
+            }
+        }
 
-/* Reset Game Data */
-function resetGameData() {
-  if (!confirm("This will clear all saved tasks and analytics history. Continue?")) return;
-  clearState();
-  location.reload();
-}
+        async function handleSignup() {
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupPasswordConfirm').value;
 
-/* Enhanced Print to Save Summary */
-const originalPrintSummary = printSummary;
-printSummary = function() {
-  storeWeeklySummary();
-  originalPrintSummary();
-  updateDashboard();
-};
+            if (!email || !password || !confirmPassword) {
+                showAuthMessage('Please fill in all fields', false);
+                return;
+            }
 
-// Initialize game
-init();
-updateStats();
+            if (password.length < 6) {
+                showAuthMessage('Password must be at least 6 characters', false);
+                return;
+            }
 
-</script>
+            if (password !== confirmPassword) {
+                showAuthMessage('Passwords do not match', false);
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password
+                });
+
+                if (error) throw error;
+
+                showAuthMessage('✅ Account created! Please check your email to verify.', true);
+                
+                setTimeout(() => {
+                    document.querySelector('[data-tab="login"]').click();
+                    document.getElementById('loginEmail').value = email;
+                }, 2000);
+            } catch (error) {
+                showAuthMessage(error.message, false);
+            }
+        }
+
+        async function handleLogout() {
+            if (confirm('Are you sure you want to logout? Your tasks are saved in the cloud.')) {
+                await saveTasksToCloud();
+                await supabase.auth.signOut();
+                currentUser = null;
+                showAuth();
+            }
+        }
+
+        function showAuthMessage(message, isSuccess) {
+            const messageEl = document.getElementById('authMessage');
+            messageEl.textContent = message;
+            messageEl.className = isSuccess ? 'auth-success' : 'auth-error';
+        }
+
+        function showAuth() {
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('gameContainer').classList.remove('active');
+        }
+
+        function showGame() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('gameContainer').classList.add('active');
+            document.getElementById('userEmail').textContent = currentUser.email;
+        }
+
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                currentUser = session.user;
+                showGame();
+                loadUserTasks();
+            } else {
+                showAuth();
+            }
+        });
+
+        // CLOUD SYNC FUNCTIONS
+        function showSyncStatus(status) {
+            const syncEl = document.getElementById('syncStatus');
+            syncEl.className = 'sync-status ' + status;
+            
+            if (status === 'syncing') {
+                syncEl.textContent = '💾 Syncing...';
+            } else if (status === 'synced') {
+                syncEl.textContent = '✅ Synced';
+                setTimeout(() => {
+                    syncEl.className = 'sync-status';
+                }, 2000);
+            }
+        }
+
+        async function saveTasksToCloud() {
+            if (!currentUser) return;
+            
+            showSyncStatus('syncing');
+            
+            const tasksData = {
+                tasks: tasks,
+                stats: {
+                    completed: completedTasks,
+                    burned: burnedTasks
+                }
+            };
+
+            try {
+                const { data: existing } = await supabase
+                    .from('user_tasks')
+                    .select('id')
+                    .eq('user_id', currentUser.id)
+                    .single();
+
+                if (existing) {
+                    await supabase
+                        .from('user_tasks')
+                        .update({ tasks: tasksData })
+                        .eq('user_id', currentUser.id);
+                } else {
+                    await supabase
+                        .from('user_tasks')
+                        .insert([{ 
+                            user_id: currentUser.id, 
+                            tasks: tasksData 
+                        }]);
+                }
+                
+                showSyncStatus('synced');
+            } catch (error) {
+                console.error('Error saving tasks:', error);
+            }
+        }
+
+        async function loadUserTasks() {
+            if (!currentUser) return;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('user_tasks')
+                    .select('tasks')
+                    .eq('user_id', currentUser.id)
+                    .single();
+
+                if (data && data.tasks) {
+                    tasks = data.tasks.tasks || [];
+                    completedTasks = data.tasks.stats?.completed || 0;
+                    burnedTasks = data.tasks.stats?.burned || 0;
+                    
+                    updateStats();
+                    renderHouses();
+                } else {
+                    init();
+                }
+            } catch (error) {
+                init();
+            }
+        }
+
+        setInterval(() => {
+            if (currentUser) {
+                saveTasksToCloud();
+            }
+        }, 30000);
+
+        // GAME LOGIC
+        const taskPool = [
+            { category: 'Work', emoji: '💼', title: 'Reply to emails', description: 'Clear out that inbox before it explodes!', color: '#3498db' },
+            { category: 'Work', emoji: '💼', title: 'Finish project report', description: 'Get those TPS reports done!', color: '#3498db' },
+            { category: 'Work', emoji: '💼', title: 'Schedule team meeting', description: 'Coordinate with the crew', color: '#3498db' },
+            { category: 'Health', emoji: '🏃', title: 'Go for a 20-min walk', description: 'Your body will thank you!', color: '#27ae60' },
+            { category: 'Health', emoji: '🏃', title: 'Drink 8 glasses of water', description: 'Hydration = life', color: '#27ae60' },
+            { category: 'Health', emoji: '🏃', title: 'Do 10 pushups', description: 'Quick strength boost!', color: '#27ae60' },
+            { category: 'Finance', emoji: '💰', title: 'Pay credit card bill', description: 'Avoid those late fees!', color: '#f39c12' },
+            { category: 'Finance', emoji: '💰', title: 'Review budget', description: 'Where did your money go?', color: '#f39c12' },
+            { category: 'Finance', emoji: '💰', title: 'Transfer to savings', description: 'Future you will be grateful', color: '#f39c12' },
+            { category: 'Social', emoji: '👥', title: 'Text that friend', description: 'They miss you!', color: '#e74c3c' },
+            { category: 'Social', emoji: '👥', title: 'Plan weekend hangout', description: 'Social life needs attention', color: '#e74c3c' },
+            { category: 'Social', emoji: '👥', title: 'Call your parents', description: 'They want to hear from you', color: '#e74c3c' },
+            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Family dinner tonight', description: 'Quality time together', color: '#9b59b6' },
+            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Help kids with homework', description: 'Support their learning', color: '#9b59b6' },
+            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Video call grandparents', description: 'They love seeing you', color: '#9b59b6' },
+            { category: 'Personal', emoji: '🌱', title: 'Read for 15 minutes', description: 'Feed your mind', color: '#1abc9c' },
+            { category: 'Personal', emoji: '🌱', title: 'Journal your thoughts', description: 'Reflect on your day', color: '#1abc9c' },
+            { category: 'Personal', emoji: '🌱', title: 'Practice a new skill', description: 'Get 1% better', color: '#1abc9c' },
+            { category: 'Home', emoji: '🏡', title: 'Do the dishes', description: 'Clean kitchen = clear mind', color: '#e67e22' },
+            { category: 'Home', emoji: '🏡', title: 'Take out trash', description: 'Before it starts smelling!', color: '#e67e22' },
+            { category: 'Home', emoji: '🏡', title: 'Water the plants', description: 'They need love too!', color: '#e67e22' }
+        ];
+
+        let tasks = [];
+        let completedTasks = 0;
+        let burnedTasks = 0;
+
+        function init() {
+            tasks = [];
+            for (let i = 0; i < 7; i++) {
+                const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
+                createHouse({ ...randomTask });
+            }
+            updateStats();
+            renderHouses();
+        }
+
+        function createHouse(taskData) {
+            const house = {
+                id: Date.now() + Math.random(),
+                ...taskData,
+                timeLeft: 60,
+                burning: false,
+                gracePeriod: false
+            };
+            tasks.push(house);
+            startTimer(house.id);
+            return house;
+        }
+
+        function startTimer(houseId) {
+            const interval = setInterval(() => {
+                const house = tasks.find(h => h.id === houseId);
+                if (!house) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                house.timeLeft--;
+
+                if (house.timeLeft <= 0 && !house.gracePeriod) {
+                    house.burning = true;
+                    house.gracePeriod = true;
+                    house.timeLeft = 10;
+                }
+
+                if (house.timeLeft <= 0 && house.gracePeriod) {
+                    burnHouse(houseId);
+                    clearInterval(interval);
+                    return;
+                }
+
+                renderHouses();
+            }, 1000);
+        }
+
+        function completeTask(houseId) {
+            tasks = tasks.filter(h => h.id !== houseId);
+            completedTasks++;
+            updateStats();
+            renderHouses();
+            createConfetti();
+            
+            const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
+            createHouse({ ...randomTask });
+            renderHouses();
+            
+            saveTasksToCloud();
+        }
+
+        function burnHouse(houseId) {
+            tasks = tasks.filter(h => h.id !== houseId);
+            burnedTasks++;
+            updateStats();
+            renderHouses();
+            
+            const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
+            createHouse({ ...randomTask });
+            renderHouses();
+            
+            saveTasksToCloud();
+        }
+
+        function mentalHealthReset() {
+            if (confirm('🕊️ Let it all burn and start fresh? This is your mental health reset.')) {
+                tasks = [];
+                renderHouses();
+                
+                setTimeout(() => {
+                    for (let i = 0; i < 7; i++) {
+                        setTimeout(() => {
+                            const randomTask = taskPool[Math.floor(Math.random() * taskPool.length)];
+                            createHouse({ ...randomTask });
+                            renderHouses();
+                        }, i * 300);
+                    }
+                    saveTasksToCloud();
+                }, 500);
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('completedCount').textContent = completedTasks;
+            document.getElementById('burnedCount').textContent = burnedTasks;
+            document.getElementById('activeCount').textContent = tasks.length;
+        }
+
+        function renderHouses() {
+            const container = document.getElementById('housesContainer');
+            container.innerHTML = '';
+
+            tasks.forEach(house => {
+                const houseEl = document.createElement('div');
+                houseEl.className = 'house' + (house.burning ? ' burning' : '');
+                
+                const urgencyPercent = house.gracePeriod ? 100 : ((60 - house.timeLeft) / 60) * 100;
+                const minutes = Math.floor(house.timeLeft / 60);
+                const seconds = house.timeLeft % 60;
+                const timeDisplay = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                let timerClass = 'timer';
+                if (house.gracePeriod) {
+                    timerClass += ' danger';
+                } else if (house.timeLeft <= 20) {
+                    timerClass += ' warning';
+                }
+
+                houseEl.innerHTML = `
+                    <span class="category-badge" style="background: ${house.color}; color: white;">
+                        ${house.emoji} ${house.category}
+                    </span>
+                    <div class="task-title">${house.title}</div>
+                    <div class="task-description">${house.description}</div>
+                    <div class="urgency-bar">
+                        <div class="urgency-fill" style="width: ${urgencyPercent}%"></div>
+                    </div>
+                    <div class="${timerClass}">
+                        ${house.gracePeriod ? '🔥 ' : '⏱️ '}${timeDisplay}
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-done" onclick="completeTask(${house.id})">
+                            ✅ Done
+                        </button>
+                        <button class="action-btn btn-burn" onclick="burnHouse(${house.id})">
+                            🔥 Burn
+                        </button>
+                    </div>
+                    <div class="fire-effect"></div>
+                `;
+                
+                container.appendChild(houseEl);
+            });
+        }
+
+        function createConfetti() {
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F'];
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '0px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+    </script>
 </body>
 </html>
