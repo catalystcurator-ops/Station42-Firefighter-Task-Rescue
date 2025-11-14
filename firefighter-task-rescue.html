@@ -30,15 +30,18 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
             position: relative;
-            overflow-x: hidden;
         }
 
-        /* Animated Background */
+        /* ==========================================
+           NEW LOGIN SCREEN STYLES ONLY
+           ========================================== */
+
+        /* Animated Background for Login Screen */
         body::before {
             content: '';
             position: fixed;
@@ -53,6 +56,16 @@
             animation: float 20s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        body.login-view::before {
+            opacity: 1;
+        }
+
+        body.login-view {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
         }
 
         @keyframes float {
@@ -69,6 +82,11 @@
             border-radius: 50%;
             pointer-events: none;
             animation: particle-float 15s linear infinite;
+            opacity: 0;
+        }
+
+        body.login-view .particle {
+            opacity: 1;
         }
 
         @keyframes particle-float {
@@ -103,6 +121,7 @@
             position: relative;
             z-index: 10;
             animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: 'Poppins', sans-serif;
         }
 
         @keyframes slideIn {
@@ -211,7 +230,7 @@
             }
         }
 
-        /* Shiny Premium Title */
+        /* Shiny Premium Title with Dark Outline */
         #authContainer h1 {
             font-size: 48px;
             font-weight: 900;
@@ -288,6 +307,7 @@
             overflow: hidden;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-family: 'Poppins', sans-serif;
         }
 
         .auth-tab::before {
@@ -437,6 +457,7 @@
             overflow: hidden;
             letter-spacing: 1px;
             text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
         }
 
         .auth-button::before {
@@ -503,7 +524,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Game Container Styles (keeping original game design) */
+        /* ==========================================
+           ORIGINAL GAME DESIGN (UNCHANGED)
+           ========================================== */
+
+        /* Game Container */
         #gameContainer {
             display: none;
             max-width: 1400px;
@@ -520,7 +545,7 @@
             margin-bottom: 30px;
         }
 
-        .game-title {
+        h1 {
             font-size: 48px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             margin-bottom: 10px;
@@ -782,7 +807,6 @@
             color: #27ae60;
         }
 
-        /* Mobile Responsive */
         @media (max-width: 768px) {
             #authContainer {
                 padding: 45px 30px;
@@ -797,7 +821,7 @@
                 font-size: 70px;
             }
 
-            .game-title { font-size: 32px; }
+            h1 { font-size: 32px; }
             .houses-container {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -813,10 +837,9 @@
         }
     </style>
 </head>
-<body>
-    <!-- Floating Particles -->
+<body class="login-view">
+    <!-- Floating Particles for Login -->
     <script>
-        // Create floating particles
         for (let i = 0; i < 15; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
@@ -900,10 +923,10 @@
         <div id="authMessage"></div>
     </div>
 
-    <!-- Game Container -->
+    <!-- Game Container - YOUR ORIGINAL DESIGN -->
     <div id="gameContainer">
         <header>
-            <h1 class="game-title">🚒 Firefighter Task Rescue</h1>
+            <h1>🚒 Firefighter Task Rescue</h1>
             <div class="user-info" id="userInfo">
                 <span id="userEmail"></span>
             </div>
@@ -1071,11 +1094,13 @@
         }
 
         function showAuth() {
+            document.body.classList.add('login-view');
             document.getElementById('authContainer').style.display = 'block';
             document.getElementById('gameContainer').classList.remove('active');
         }
 
         function showGame() {
+            document.body.classList.remove('login-view');
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('gameContainer').classList.add('active');
             document.getElementById('userEmail').textContent = currentUser.email;
@@ -1091,7 +1116,7 @@
             }
         });
 
-        // CLOUD SYNC FUNCTIONS
+        // CLOUD SYNC
         function showSyncStatus(status) {
             const syncEl = document.getElementById('syncStatus');
             syncEl.className = 'sync-status ' + status;
@@ -1177,29 +1202,43 @@
             }
         }, 30000);
 
-        // GAME LOGIC
+        // GAME LOGIC - YOUR ORIGINAL CODE
         const taskPool = [
             { category: 'Work', emoji: '💼', title: 'Reply to emails', description: 'Clear out that inbox before it explodes!', color: '#3498db' },
             { category: 'Work', emoji: '💼', title: 'Finish project report', description: 'Get those TPS reports done!', color: '#3498db' },
             { category: 'Work', emoji: '💼', title: 'Schedule team meeting', description: 'Coordinate with the crew', color: '#3498db' },
+            { category: 'Work', emoji: '💼', title: 'Update LinkedIn profile', description: 'Professional presence matters', color: '#3498db' },
+            { category: 'Work', emoji: '💼', title: 'Review code PR', description: 'Help your teammate ship that feature', color: '#3498db' },
             { category: 'Health', emoji: '🏃', title: 'Go for a 20-min walk', description: 'Your body will thank you!', color: '#27ae60' },
             { category: 'Health', emoji: '🏃', title: 'Drink 8 glasses of water', description: 'Hydration = life', color: '#27ae60' },
             { category: 'Health', emoji: '🏃', title: 'Do 10 pushups', description: 'Quick strength boost!', color: '#27ae60' },
+            { category: 'Health', emoji: '🏃', title: 'Schedule doctor appointment', description: 'That checkup is overdue', color: '#27ae60' },
+            { category: 'Health', emoji: '🏃', title: 'Meditate for 5 minutes', description: 'Mental health counts too', color: '#27ae60' },
             { category: 'Finance', emoji: '💰', title: 'Pay credit card bill', description: 'Avoid those late fees!', color: '#f39c12' },
             { category: 'Finance', emoji: '💰', title: 'Review budget', description: 'Where did your money go?', color: '#f39c12' },
+            { category: 'Finance', emoji: '💰', title: 'Set up auto-pay', description: 'Automate your finances', color: '#f39c12' },
             { category: 'Finance', emoji: '💰', title: 'Transfer to savings', description: 'Future you will be grateful', color: '#f39c12' },
+            { category: 'Finance', emoji: '💰', title: 'Review subscriptions', description: 'Cancel what you don\'t use', color: '#f39c12' },
             { category: 'Social', emoji: '👥', title: 'Text that friend', description: 'They miss you!', color: '#e74c3c' },
             { category: 'Social', emoji: '👥', title: 'Plan weekend hangout', description: 'Social life needs attention', color: '#e74c3c' },
+            { category: 'Social', emoji: '👥', title: 'Reply to group chat', description: 'Don\'t be that person', color: '#e74c3c' },
             { category: 'Social', emoji: '👥', title: 'Call your parents', description: 'They want to hear from you', color: '#e74c3c' },
+            { category: 'Social', emoji: '👥', title: 'Send birthday wishes', description: 'Someone\'s special day!', color: '#e74c3c' },
             { category: 'Family', emoji: '👨‍👩‍👧', title: 'Family dinner tonight', description: 'Quality time together', color: '#9b59b6' },
             { category: 'Family', emoji: '👨‍👩‍👧', title: 'Help kids with homework', description: 'Support their learning', color: '#9b59b6' },
+            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Plan family activity', description: 'Create memories!', color: '#9b59b6' },
             { category: 'Family', emoji: '👨‍👩‍👧', title: 'Video call grandparents', description: 'They love seeing you', color: '#9b59b6' },
+            { category: 'Family', emoji: '👨‍👩‍👧', title: 'Update family calendar', description: 'Keep everyone coordinated', color: '#9b59b6' },
             { category: 'Personal', emoji: '🌱', title: 'Read for 15 minutes', description: 'Feed your mind', color: '#1abc9c' },
+            { category: 'Personal', emoji: '🌱', title: 'Learn something new', description: 'Growth happens daily', color: '#1abc9c' },
             { category: 'Personal', emoji: '🌱', title: 'Journal your thoughts', description: 'Reflect on your day', color: '#1abc9c' },
             { category: 'Personal', emoji: '🌱', title: 'Practice a new skill', description: 'Get 1% better', color: '#1abc9c' },
+            { category: 'Personal', emoji: '🌱', title: 'Set weekly goals', description: 'Direction creates progress', color: '#1abc9c' },
             { category: 'Home', emoji: '🏡', title: 'Do the dishes', description: 'Clean kitchen = clear mind', color: '#e67e22' },
             { category: 'Home', emoji: '🏡', title: 'Take out trash', description: 'Before it starts smelling!', color: '#e67e22' },
-            { category: 'Home', emoji: '🏡', title: 'Water the plants', description: 'They need love too!', color: '#e67e22' }
+            { category: 'Home', emoji: '🏡', title: 'Vacuum living room', description: 'Dust bunnies must go', color: '#e67e22' },
+            { category: 'Home', emoji: '🏡', title: 'Water the plants', description: 'They need love too!', color: '#e67e22' },
+            { category: 'Home', emoji: '🏡', title: 'Organize one drawer', description: 'Small wins count', color: '#e67e22' }
         ];
 
         let tasks = [];
